@@ -1,0 +1,187 @@
+﻿<Window x:Class="parser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:parser"
+        mc:Ignorable="d"
+        Title="UMDBParser" Height="600" Width="1000" Icon="bot.ico">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" BorderBrush="Black">
+            <MenuItem Header="Файл" Command="">
+                <MenuItem Header="Очисти форму" Command="{Binding ClearWindow_Command}"/>
+                <MenuItem Header="Відрити" Command="{Binding OpenFile_Command}"/>
+                <MenuItem Header="Зберегти" Command="{Binding SaveFile_Command}"/>
+                <Separator />
+                <MenuItem Header="Вийти" Command="{Binding CloseWindow_Command}" CommandParameter="{Binding ElementName=MainWindowName}"/>
+            </MenuItem>
+            <MenuItem Header="БД" Command=""/>
+            <MenuItem Header="Допомога" Command=""/>
+        </Menu>
+        <Grid DockPanel.Dock="Bottom" Margin="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.7*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Користувач" Grid.Column="0" Margin="3,0,3,3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Ім'я користувача"/>
+                            <TextBox Text="{Binding UserName}" Grid.Column="1" Margin="3"/>
+                            <Label Content="Пароль" Grid.Row="1"/>
+                            <TextBox Text="{Binding UserPassword}" Grid.Row="1" Grid.Column="1" Margin="3"/>
+                            <Label Content="{Binding Status}" Foreground="{Binding StatusColor}" Grid.Row="2"/>
+                            <Button Command="{Binding LoginCommand}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Content="Увійти"  Width="75" Margin="3"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Розділ" Grid.Column="1" Margin="3,0,3,3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Посилання"/>
+                            <TextBox Text="{Binding Url}" Margin="3" Grid.Column="1"/>
+                            <Label Content="Сторінки з " Grid.Row="1"/>
+                            <Grid Grid.Row="1" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding FromPage}"  Margin="3"/>
+                                <Label Content="до" Grid.Column="1"/>
+                                <TextBox Text="{Binding ToPage}"  Margin="3" Grid.Column="2"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.5*"/>
+                                    <ColumnDefinition Width="0.5*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="Очисти форму" Command="{Binding ClearCommand}" Margin="3"/>
+                                <Button Content="Отримати інформацію з розділу" Command="{Binding GetAllInfoCommand}"  Margin="3" Grid.Column="1"/>
+                            </Grid>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Тема" Grid.Column="2" Margin="3,0,3,3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Отримати інф. для всіх" Command="{Binding GetInfoToAllCommand}" Margin="3" />
+                            <Button Content="Розпарсити постери" Command="{Binding GetPostersCommand}" Margin="3" Grid.Column="1"/>
+                            <Label Content="Пошук за назвою:" Grid.Column="2"/>
+                            <TextBox Text="{Binding SearchText}" Grid.Column="3" Margin="3"/>
+                            <Button Content="Відкрити з xml" Command="{Binding OpenFromXmlCommand}" Margin="3" Grid.Row="1"/>
+                            <Button Content="Відкрити з bin" Command="{Binding OpenFromBinaryCommand}" Margin="3" Grid.Row="1" Grid.Column="1"/>
+                            <Button Content="Відкрити з БД" IsEnabled="False" Command="{Binding OpenFromDbCommand}" Margin="3" Grid.Row="1" Grid.Column="2"/>
+                            <Button Content="Оновити" Command="{Binding UpdateCommand}" Margin="3" Grid.Row="1" Grid.Column="3" Foreground="Red"/>
+                            <Button Content="Зберегти в xml" Command="{Binding SaveToXmlCommand}" Margin="3" Grid.Row="2"/>
+                            <Button Content="Зберегти в bin" Command="{Binding SaveToXmlCommand}" Margin="3" Grid.Row="2" Grid.Column="1"/>
+                            <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
+                            <Button Content="Зберегти постери" Command="" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.03*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.04*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.04*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.08*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Name="moviewidth1"></Border>
+                        <Border Grid.Column="1" Name="moviewidth2"></Border>
+                        <Border Grid.Column="2" Name="moviewidth3"></Border>
+                        <Border Grid.Column="3" Name="moviewidth4"></Border>
+                        <Border Grid.Column="4" Name="moviewidth5"></Border>
+                        <Border Grid.Column="5" Name="moviewidth6"></Border>
+                        <Border Grid.Column="6" Name="moviewidth7"></Border>
+                        <Border Grid.Column="7" Name="moviewidth8"></Border>
+                        <Border Grid.Column="8" Name="moviewidth9"></Border>
+                        <Border Grid.Column="9" Name="moviewidth10"></Border>
+                    </Grid>
+                    <ListView x:Name="tops" HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Topics}" DisplayMemberPath="trimmed">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding ShowTopicCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Height" Value="18" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text }" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="№" Width="{Binding ElementName=moviewidth1, Path=ActualWidth}" DisplayMemberBinding="{Binding Id}" />
+                                <GridViewColumn Header="Назва" Width="{Binding ElementName=moviewidth2, Path=ActualWidth}" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="Рік" Width="{Binding ElementName=moviewidth3, Path=ActualWidth}" DisplayMemberBinding="{Binding Year}" />
+                                <GridViewColumn Header="imdb" Width="{Binding ElementName=moviewidth4, Path=ActualWidth}" DisplayMemberBinding="{Binding ImdbLink}" />
+                                <GridViewColumn Header="Режисер" Width="{Binding ElementName=moviewidth5, Path=ActualWidth}" DisplayMemberBinding="{Binding Director}" />
+                                <GridViewColumn Header="Актори" Width="{Binding ElementName=moviewidth6, Path=ActualWidth}" DisplayMemberBinding="{Binding Actors}" />
+                                <GridViewColumn Header="Кіностудії" Width="{Binding ElementName=moviewidth7, Path=ActualWidth}" DisplayMemberBinding="{Binding Companies}" />
+                                <GridViewColumn Header="Сюжет" Width="{Binding ElementName=moviewidth8, Path=ActualWidth}" DisplayMemberBinding="{Binding Story}" />
+                                <GridViewColumn Header="Постер" Width="{Binding ElementName=moviewidth9, Path=ActualWidth}" DisplayMemberBinding="{Binding Poster}" />
+                                <GridViewColumn Header="Файл" Width="{Binding ElementName=moviewidth10, Path=ActualWidth}" DisplayMemberBinding="{Binding PosterFileName}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </Grid>
+            <DockPanel DataContext="{Binding ElementName=tabControl, Path=SelectedItem.DataContext}" Grid.Row="1">
+                <Label Content="Прогрес:"/>
+                <Label Content="{Binding Progress}" />
+                <Label Content="з"/>
+                <Label Content="{Binding Maximum}"/>
+                <ProgressBar Value="{Binding Progress}" Maximum="{Binding Maximum}" Minimum="0" Height="20" Margin="5"/>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>
