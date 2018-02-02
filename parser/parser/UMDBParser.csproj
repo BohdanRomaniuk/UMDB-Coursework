@@ -38,6 +38,10 @@
     <ApplicationIcon>bot.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.6.15.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.15\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -60,7 +64,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataTypes\Movie.cs" />
+    <Compile Include="DataTypes\RelayCommand.cs" />
     <Compile Include="ViewModels\MovieViewModel.cs" />
+    <Compile Include="WebLogginer\BrowserSession.cs" />
+    <Compile Include="WebLogginer\FormElementCollection.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -92,6 +99,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -101,9 +109,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WebLogginer\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="bot.ico" />
   </ItemGroup>
