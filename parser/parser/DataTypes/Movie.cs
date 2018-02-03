@@ -238,7 +238,7 @@ namespace parser.DataTypes
             }
             else if (ind7 != -1 && ind8 != -1)
             {
-                url = "https:"+html.Substring(ind7 + 5, ind8 - ind7);
+                url = "http:" + html.Substring(ind7 + 9, ind8 - ind7-9);
             }
             else
             {
