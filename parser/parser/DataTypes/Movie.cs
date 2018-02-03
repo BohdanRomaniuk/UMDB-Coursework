@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace parser.DataTypes
@@ -54,7 +55,9 @@ namespace parser.DataTypes
             set
             {
                 name = value;
+                PosterFileName = CreatePosterFileName(value, Poster);
                 OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(PosterFileName));
             }
         }
         public int Year
@@ -162,7 +165,9 @@ namespace parser.DataTypes
             set
             {
                 poster = value;
+                PosterFileName = CreatePosterFileName(Name,value);
                 OnPropertyChanged(nameof(Poster));
+                OnPropertyChanged(nameof(PosterFileName));
             }
         }
         public string PosterFileName
@@ -245,6 +250,25 @@ namespace parser.DataTypes
                 url = "Помилка!";
             }
             return url;
+        }
+
+        private static string CreatePosterFileName(string _name, string _url)
+        {
+            _name = _name.Replace('/', '-');
+            _name = _name.Replace('|', '-');
+            _name = _name.Replace(':', ' ');
+            _name = _name.Replace('*', ' ');
+            _name = _name.Replace('?', ' ');
+            _name = _name.Replace('"', ' ');
+            _name = _name.Replace('<', ' ');
+            _name = _name.Replace('>', ' ');
+            _name = _name.Replace("  ", " ");
+            _name = _name.Replace(") .", ").");
+            _name = _name.Replace(" - ", "-");
+            _name = _name.Replace(' ', '_');
+            _name = _name.Replace(Environment.NewLine, " ");
+            _name = _name.Replace("\r\n", " ");
+            return _name + Path.GetExtension(_url);
         }
 
         [field: NonSerialized]
