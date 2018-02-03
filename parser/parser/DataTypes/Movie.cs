@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace parser.DataTypes
 {
@@ -209,7 +210,7 @@ namespace parser.DataTypes
         public static string ParseImdbLinkFromHtml(string html)
         {
             int startPos = html.IndexOf("imdb.com");
-            int endPos = html.IndexOf('"', startPos);
+            int endPos = (startPos!=-1)?html.IndexOf('"', startPos):-1;
             return (startPos!=-1 && endPos!=-1)?"https://"+html.Substring(startPos,  endPos -startPos):"Помилка";
         }
 
@@ -269,6 +270,18 @@ namespace parser.DataTypes
             _name = _name.Replace(Environment.NewLine, " ");
             _name = _name.Replace("\r\n", " ");
             return _name + Path.GetExtension(_url);
+        }
+
+        public static string StripHTML(string input)
+        {
+            return Regex.Replace(input, "<.*?>", String.Empty);
+        }
+
+        public static string ParseElementByNameFromText(string text, string elemName)
+        {
+            int startPos = text.IndexOf(elemName);
+            int endPos = (startPos!=-1)?text.IndexOf('\n', startPos):-1;
+            return (startPos!=-1 && endPos!=-1)?text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length):"Помилка";
         }
 
         [field: NonSerialized]

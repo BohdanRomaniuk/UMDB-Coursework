@@ -322,6 +322,13 @@ namespace parser.ViewModels
                 var firstPost = doc.DocumentNode.SelectSingleNode("//span[@class='postbody']");
                 Movies[i].ImdbLink = Movie.ParseImdbLinkFromHtml(firstPost.InnerHtml);
                 Movies[i].Poster = Movie.ParsePosterLinkFromHtml(firstPost.InnerHtml);
+                string text =  Movie.StripHTML(firstPost.InnerHtml);
+                Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
+                Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
+                Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:");
+                Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
+                Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
+                Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
                 ++Progress;
             }
         }
