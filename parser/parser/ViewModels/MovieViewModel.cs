@@ -166,6 +166,7 @@ namespace parser.ViewModels
         #region commands
         public ICommand LoginCommand { get; private set; }
         public ICommand GetAllInfoCommand { get; private set; }
+        public ICommand ShowMovieCommand { get; private set; }
         #endregion
 
         public MovieViewModel()
@@ -177,9 +178,10 @@ namespace parser.ViewModels
 
             LoginCommand = new RelayCommand(Login);
             GetAllInfoCommand = new RelayCommand(GetAllInfo);
+            ShowMovieCommand = new RelayCommand(ShowMovie);
         }
 
-        public async void Login(object obj)
+        private async void Login(object obj)
         {
             await Task.Run(() =>
             {
@@ -195,7 +197,7 @@ namespace parser.ViewModels
             });
         }
 
-        public async void GetAllInfo(object obj)
+        private async void GetAllInfo(object obj)
         {
             Movies.Clear();
             Progress = 0;
@@ -214,9 +216,19 @@ namespace parser.ViewModels
                 for(int i=urls.Count-1; i>=0; --i)
                 {
                     name = urls[i].InnerText.Substring(0, urls[i].InnerHtml.LastIndexOf(')') + 1);
-                    Movies.Insert(0,new Movie(++id, name, Convert.ToInt32(name.Substring(name.Length-5, 4))));
+                    Movies.Insert(0,new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(name.Substring(name.Length-5, 4))));
                 }
                 ++Progress;
+            }
+        }
+
+        private void ShowMovie(object obj)
+        {
+            if (obj != null)
+            {
+                MovieWindow tw = new MovieWindow(obj as Movie);
+                tw.Show();
+                tw.Owner = ((MainWindow)System.Windows.Application.Current.MainWindow);
             }
         }
 

@@ -123,6 +123,8 @@
                             <ColumnDefinition Width="0.2*"></ColumnDefinition>
                             <ColumnDefinition Width="0.04*"></ColumnDefinition>
                             <ColumnDefinition Width="0.04*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.04*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.04*"></ColumnDefinition>
                             <ColumnDefinition Width="0.08*"></ColumnDefinition>
                             <ColumnDefinition Width="0.1*"></ColumnDefinition>
                             <ColumnDefinition Width="0.15*"></ColumnDefinition>
@@ -140,11 +142,13 @@
                         <Border Grid.Column="7" Name="moviewidth8"></Border>
                         <Border Grid.Column="8" Name="moviewidth9"></Border>
                         <Border Grid.Column="9" Name="moviewidth10"></Border>
+                        <Border Grid.Column="10" Name="moviewidth11"></Border>
+                        <Border Grid.Column="11" Name="moviewidth12"></Border>
                     </Grid>
                     <ListView x:Name="tops" HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Movies}" DisplayMemberPath="trimmed">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding ShowTopicCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}"/>
+                                <i:InvokeCommandAction Command="{Binding ShowMovieCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListView.ItemContainerStyle>
@@ -163,19 +167,21 @@
                                 <GridViewColumn Header="№" Width="{Binding ElementName=moviewidth1, Path=ActualWidth}" DisplayMemberBinding="{Binding Id}" />
                                 <GridViewColumn Header="Назва" Width="{Binding ElementName=moviewidth2, Path=ActualWidth}" DisplayMemberBinding="{Binding Name}" />
                                 <GridViewColumn Header="Рік" Width="{Binding ElementName=moviewidth3, Path=ActualWidth}" DisplayMemberBinding="{Binding Year}" />
-                                <GridViewColumn Header="imdb" Width="{Binding ElementName=moviewidth4, Path=ActualWidth}" DisplayMemberBinding="{Binding ImdbLink}" />
-                                <GridViewColumn Header="Режисер" Width="{Binding ElementName=moviewidth5, Path=ActualWidth}" DisplayMemberBinding="{Binding Director}" />
-                                <GridViewColumn Header="Актори" Width="{Binding ElementName=moviewidth6, Path=ActualWidth}" DisplayMemberBinding="{Binding Actors}" />
-                                <GridViewColumn Header="Кіностудії" Width="{Binding ElementName=moviewidth7, Path=ActualWidth}" DisplayMemberBinding="{Binding Companies}" />
-                                <GridViewColumn Header="Сюжет" Width="{Binding ElementName=moviewidth8, Path=ActualWidth}" DisplayMemberBinding="{Binding Story}" />
-                                <GridViewColumn Header="Постер" Width="{Binding ElementName=moviewidth9, Path=ActualWidth}" DisplayMemberBinding="{Binding Poster}" />
-                                <GridViewColumn Header="Файл" Width="{Binding ElementName=moviewidth10, Path=ActualWidth}" DisplayMemberBinding="{Binding PosterFileName}" />
+                                <GridViewColumn Header="Жанр" Width="{Binding ElementName=moviewidth4, Path=ActualWidth}" DisplayMemberBinding="{Binding Genre}" />
+                                <GridViewColumn Header="Країна" Width="{Binding ElementName=moviewidth5, Path=ActualWidth}" DisplayMemberBinding="{Binding Countries}" />
+                                <GridViewColumn Header="imdb" Width="{Binding ElementName=moviewidth6, Path=ActualWidth}" DisplayMemberBinding="{Binding ImdbLink}" />
+                                <GridViewColumn Header="Режисер" Width="{Binding ElementName=moviewidth7, Path=ActualWidth}" DisplayMemberBinding="{Binding Director}" />
+                                <GridViewColumn Header="Актори" Width="{Binding ElementName=moviewidth8, Path=ActualWidth}" DisplayMemberBinding="{Binding Actors}" />
+                                <GridViewColumn Header="Кіностудії" Width="{Binding ElementName=moviewidth9, Path=ActualWidth}" DisplayMemberBinding="{Binding Companies}" />
+                                <GridViewColumn Header="Сюжет" Width="{Binding ElementName=moviewidth10, Path=ActualWidth}" DisplayMemberBinding="{Binding Story}" />
+                                <GridViewColumn Header="Постер" Width="{Binding ElementName=moviewidth11, Path=ActualWidth}" DisplayMemberBinding="{Binding Poster}" />
+                                <GridViewColumn Header="Файл" Width="{Binding ElementName=moviewidth12, Path=ActualWidth}" DisplayMemberBinding="{Binding PosterFileName}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </Grid>
             </Grid>
-            <DockPanel DataContext="{Binding ElementName=tabControl, Path=SelectedItem.DataContext}" Grid.Row="1">
+            <DockPanel Grid.Row="1">
                 <Label Content="Прогрес:"/>
                 <Label Content="{Binding Progress}" />
                 <Label Content="з"/>
