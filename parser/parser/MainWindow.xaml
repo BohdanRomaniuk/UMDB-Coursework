@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:parser"
         mc:Ignorable="d"
-        Title="UMDBParser" Height="600" Width="1000" Icon="bot.ico">
+        Title="UMDBParser" Name="MainWindowName" Height="600" Width="1000" Icon="bot.ico">
     <DockPanel>
         <Menu DockPanel.Dock="Top" BorderBrush="Black">
             <MenuItem Header="Файл" Command="">
@@ -110,7 +110,7 @@
                             <Button Content="Відкрити з БД" IsEnabled="False" Command="{Binding OpenFromDbCommand}" Margin="3" Grid.Row="1" Grid.Column="2"/>
                             <Button Content="Оновити" Command="{Binding UpdateCommand}" Margin="3" Grid.Row="1" Grid.Column="3" Foreground="Red"/>
                             <Button Content="Зберегти в xml" Command="{Binding SaveToXmlCommand}" Margin="3" Grid.Row="2"/>
-                            <Button Content="Зберегти в bin" Command="{Binding SaveToXmlCommand}" Margin="3" Grid.Row="2" Grid.Column="1"/>
+                            <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2" Grid.Column="1"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
                             <Button Content="Зберегти постери" Command="" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>
                         </Grid>
@@ -145,7 +145,7 @@
                         <Border Grid.Column="10" Name="moviewidth11"></Border>
                         <Border Grid.Column="11" Name="moviewidth12"></Border>
                     </Grid>
-                    <ListView x:Name="tops" HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Movies}" DisplayMemberPath="trimmed">
+                    <ListView x:Name="tops" HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Path=Movies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="trimmed">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowMovieCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}"/>

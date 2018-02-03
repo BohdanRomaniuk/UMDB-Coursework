@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -129,7 +131,19 @@ namespace parser.ViewModels
             }
         }
 
-        public ObservableCollection<Movie> Movies { get; private set; }
+        private ObservableCollection<Movie> movies;
+        public ObservableCollection<Movie> Movies
+        {
+            get
+            {
+                return movies;
+            }
+            set
+            {
+                movies = value;
+                OnPropertyChanged(nameof(Movies));
+            }
+        }
         #endregion parsing
 
         //ProgressBar
@@ -165,8 +179,11 @@ namespace parser.ViewModels
         //Commands
         #region commands
         public ICommand LoginCommand { get; private set; }
+        public ICommand ClearCommand { get; private set; }
         public ICommand GetAllInfoCommand { get; private set; }
         public ICommand ShowMovieCommand { get; private set; }
+        public ICommand OpenFromBinaryCommand { get; private set; }
+        public ICommand SaveToBinaryCommand { get; private set; }
         #endregion
 
         public MovieViewModel()
@@ -177,8 +194,11 @@ namespace parser.ViewModels
             Movies = new ObservableCollection<Movie>();
 
             LoginCommand = new RelayCommand(Login);
+            ClearCommand = new RelayCommand(Clear);
             GetAllInfoCommand = new RelayCommand(GetAllInfo);
             ShowMovieCommand = new RelayCommand(ShowMovie);
+            OpenFromBinaryCommand = new RelayCommand(OpenFromBinary);
+            SaveToBinaryCommand = new RelayCommand(SaveToBinary);
         }
 
         private async void Login(object obj)
@@ -195,6 +215,11 @@ namespace parser.ViewModels
                     StatusColor = Brushes.Green;
                 }
             });
+        }
+
+        private void Clear(object obj)
+        {
+            Movies.Clear();
         }
 
         private async void GetAllInfo(object obj)
@@ -229,6 +254,35 @@ namespace parser.ViewModels
                 MovieWindow tw = new MovieWindow(obj as Movie);
                 tw.Show();
                 tw.Owner = ((MainWindow)System.Windows.Application.Current.MainWindow);
+            }
+        }
+
+        private void OpenFromBinary(object obj)
+        {
+            Movies.Clear();
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "BIN(*.BIN)|*.bin";
+            if (ofd.ShowDialog() ?? true)
+            {
+                using (Stream reader = File.Open(ofd.FileName, FileMode.Open))
+                {
+                    BinaryFormatter ser = new BinaryFormatter();
+                    Movies = (ObservableCollection<Movie>)ser.Deserialize(reader);
+                }
+            }
+        }
+
+        private void SaveToBinary(object obj)
+        {
+            Microsoft.Win32.SaveFileDialog svd = new Microsoft.Win32.SaveFileDialog();
+            svd.Filter = "BIN(*.BIN)|*.bin";
+            if (svd.ShowDialog() ?? true)
+            {
+                using (FileStream fileStr = new FileStream(svd.FileName, FileMode.Create))
+                {
+                    BinaryFormatter binFormater = new BinaryFormatter();
+                    binFormater.Serialize(fileStr, Movies);
+                }
             }
         }
 
