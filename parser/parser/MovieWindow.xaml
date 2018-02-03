@@ -60,11 +60,19 @@
                 <Label Content="Актори" Grid.Row="8"/>
                 <TextBox Text="{Binding Path=CurrentMovie.Actors, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1" Margin="3"/>
                 <Label Content="Сюжет" Grid.Row="9"/>
-                <TextBox Text="{Binding Path=CurrentMovie.Story, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Margin="3"/>
+                <RichTextBox x:Name="richTextBox" Grid.Row="9" Grid.Column="1" Margin="3">
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="{Binding Path=CurrentMovie.Story, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+                <!--<TextBox Text="{Binding Path=CurrentMovie.Story, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Margin="3"/>-->
                 <Label Content="Постер" Grid.Row="10"/>
                 <TextBox Text="{Binding Path=CurrentMovie.Poster, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Margin="3"/>
                 <Label Content="Файл" Grid.Row="11"/>
                 <TextBox Text="{Binding Path=CurrentMovie.PosterFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="11" Grid.Column="1" Margin="3"/>
+                
             </Grid>
         </GroupBox>
     </Grid>

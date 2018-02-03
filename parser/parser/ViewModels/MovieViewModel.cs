@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -314,22 +315,30 @@ namespace parser.ViewModels
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
             for (int i = FromMovie; i <= ToMovie; ++i)
             {
-                await Task.Run(() =>
+                try
                 {
-                    doc = session.Load("https://toloka.to/" + Movies[i].Link);
-                });
-                //<span class="postbody">
-                var firstPost = doc.DocumentNode.SelectSingleNode("//span[@class='postbody']");
-                Movies[i].ImdbLink = Movie.ParseImdbLinkFromHtml(firstPost.InnerHtml);
-                Movies[i].Poster = Movie.ParsePosterLinkFromHtml(firstPost.InnerHtml);
-                string text =  Movie.StripHTML(firstPost.InnerHtml);
-                Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
-                Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
-                Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:");
-                Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
-                Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
-                Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
-                ++Progress;
+                    await Task.Run(() =>
+                    {
+                        doc = session.Load("https://toloka.to/" + Movies[i].Link);
+                    });
+                    //<span class="postbody">
+                    var firstPost = doc.DocumentNode.SelectSingleNode("//span[@class='postbody']");
+                    Movies[i].ImdbLink = Movie.ParseImdbLinkFromHtml(firstPost.InnerHtml);
+                    Movies[i].Poster = Movie.ParsePosterLinkFromHtml(firstPost.InnerHtml);
+                    string text = Movie.StripHTML(firstPost.InnerHtml);
+                    Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
+                    Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
+                    string companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:");
+                    Movies[i].Companies = (companies != "Помилка") ? companies : Movie.ParseElementByNameFromText(text, "Кіностудія / кінокомпанія:");
+                    Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
+                    Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
+                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
+                    ++Progress;
+                }
+                catch(Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
             }
         }
 
