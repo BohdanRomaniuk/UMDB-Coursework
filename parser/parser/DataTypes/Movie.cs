@@ -33,7 +33,7 @@ namespace parser.DataTypes
                 OnPropertyChanged(nameof(Id));
             }
         }
-        private string Link
+        public string Link
         {
             get
             {

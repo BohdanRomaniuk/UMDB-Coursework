@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:parser"
         mc:Ignorable="d"
-        Title="{Binding Path=CurrentMovie.Name, UpdateSourceTrigger=PropertyChanged}" Height="400" Width="500">
+        Title="{Binding Path=CurrentMovie.Name, UpdateSourceTrigger=PropertyChanged}" Height="500" Width="700" Icon="bot.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -37,7 +37,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
