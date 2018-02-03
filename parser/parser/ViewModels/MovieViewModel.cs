@@ -309,7 +309,21 @@ namespace parser.ViewModels
 
         private async void ParseMovie(object obj)
         {
-
+            Progress = 0;
+            Maximum = ToMovie-FromMovie-1;
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            for (int i = FromMovie; i <= ToMovie; ++i)
+            {
+                await Task.Run(() =>
+                {
+                    doc = session.Load("https://toloka.to/" + Movies[i].Link);
+                });
+                //<span class="postbody">
+                var firstPost = doc.DocumentNode.SelectSingleNode("//span[@class='postbody']");
+                Movies[i].ImdbLink = Movie.ParseImdbLinkFromHtml(firstPost.InnerHtml);
+                Movies[i].Poster = Movie.ParsePosterLinkFromHtml(firstPost.InnerHtml);
+                ++Progress;
+            }
         }
 
         private void ShowMovie(object obj)

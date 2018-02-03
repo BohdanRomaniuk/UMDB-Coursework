@@ -201,6 +201,52 @@ namespace parser.DataTypes
             return String.Format("{0,-10}{1,-10}{2,-10}{3,-10}{4,-10}{5,-10}{6,-10}{7,-10}{8,-10}{9,-10}{10,-10}", Id, Name, Link, Year, Genre, Countries, ImdbLink, Companies, Director, Actors, Story, Poster, PosterFileName);
         }
 
+        public static string ParseImdbLinkFromHtml(string html)
+        {
+            int startPos = html.IndexOf("imdb.com");
+            int endPos = html.IndexOf('"', startPos);
+            return (startPos!=-1 && endPos!=-1)?"https://"+html.Substring(startPos,  endPos -startPos):"Помилка";
+        }
+
+        public static string ParsePosterLinkFromHtml(string html)
+        {
+            string url = "";
+
+            int ind1 = html.IndexOf("posters.hurtom.com");
+            int ind2 = (ind1 != -1) ? html.IndexOf('"', ind1) : -1;
+
+            int ind3 = html.IndexOf("toloka.to/photos/");
+            int ind4 = (ind3 != -1) ? html.IndexOf('"', ind3) : -1;
+
+            int ind5 = html.IndexOf("img.hurtom.com/");
+            int ind6 = (ind5 != -1) ? html.IndexOf('"', ind5) : -1;
+
+            int ind7 = html.IndexOf("img src=\"");
+            int ind8 = (ind7 != -1) ? html.IndexOf('"', ind7+9) : 0;
+
+            if (ind1 != -1 && ind2 != -1)
+            {
+                url = "https://" + html.Substring(ind1, ind2 - ind1);
+            }
+            else if (ind3 != -1 && ind4 != -1)
+            {
+                url = "https://" + html.Substring(ind3, ind4 - ind3);
+            }
+            else if (ind5 != -1 && ind6 != -1)
+            {
+                url = "https://" + html.Substring(ind5, ind6 - ind5);
+            }
+            else if (ind7 != -1 && ind8 != -1)
+            {
+                url = "https:"+html.Substring(ind7 + 5, ind8 - ind7);
+            }
+            else
+            {
+                url = "Помилка!";
+            }
+            return url;
+        }
+
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
