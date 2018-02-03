@@ -45,8 +45,11 @@ namespace parser.ViewModels
         private string url;
         private int fromPage=1;
         private int toPage=1;
+        private ObservableCollection<Movie> movies;
 
         private string searchText = "";
+        private int fromMovie;
+        private int toMovie;
 
         public string UserName
         {
@@ -147,8 +150,32 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(Movies));
             }
         }
+        public int FromMovie
+        {
+            get
+            {
+                return fromMovie;
+            }
+            set
+            {
+                fromMovie = value;
+                OnPropertyChanged(nameof(FromMovie));
+            }
+        }
+        public int ToMovie
+        {
+            get
+            {
+                return toMovie;
+            }
+            set
+            {
+                toMovie = value;
+                OnPropertyChanged(nameof(ToMovie));
+            }
+        }
 
-        private ObservableCollection<Movie> movies;
+       
         public ObservableCollection<Movie> Movies
         {
             get
@@ -162,6 +189,7 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(Movies));
             }
         }
+
         #endregion parsing
 
         //ProgressBar
@@ -202,6 +230,8 @@ namespace parser.ViewModels
         public ICommand ShowMovieCommand { get; private set; }
         public ICommand OpenFromBinaryCommand { get; private set; }
         public ICommand SaveToBinaryCommand { get; private set; }
+        public ICommand OpenParseWindowCommand { get; private set; }
+        public ICommand ParseMoviesCommand { get; private set; }
         #endregion
 
         public MovieViewModel()
@@ -217,6 +247,8 @@ namespace parser.ViewModels
             ShowMovieCommand = new RelayCommand(ShowMovie);
             OpenFromBinaryCommand = new RelayCommand(OpenFromBinary);
             SaveToBinaryCommand = new RelayCommand(SaveToBinary);
+            OpenParseWindowCommand = new RelayCommand(OpenParseWindow);
+            ParseMoviesCommand = new RelayCommand(ParseMovie);
         }
 
         private async void Login(object obj)
@@ -263,6 +295,21 @@ namespace parser.ViewModels
                 }
                 ++Progress;
             }
+        }
+
+        private void OpenParseWindow(object obj)
+        {
+            if (Movies.Count != 0)
+            {
+                ParsingPagesWindow ppw = new ParsingPagesWindow(this);
+                ppw.Show();
+                ppw.Owner = ((MainWindow)System.Windows.Application.Current.MainWindow); ;
+            }
+        }
+
+        private async void ParseMovie(object obj)
+        {
+
         }
 
         private void ShowMovie(object obj)

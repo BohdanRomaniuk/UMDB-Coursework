@@ -68,6 +68,9 @@
     <Compile Include="MovieWindow.xaml.cs">
       <DependentUpon>MovieWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ParsingPagesWindow.xaml.cs">
+      <DependentUpon>ParsingPagesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\MovieViewModel.cs" />
     <Compile Include="ViewModels\MovieWindowViewModel.cs" />
     <Compile Include="WebLogginer\BrowserSession.cs" />
@@ -85,6 +88,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MovieWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ParsingPagesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

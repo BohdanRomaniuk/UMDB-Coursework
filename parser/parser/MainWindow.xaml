@@ -101,7 +101,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Content="Отримати інф. для всіх" Command="{Binding GetInfoToAllCommand}" Margin="3" />
+                            <Button Content="Розпарсити фільми" Command="{Binding OpenParseWindowCommand}" Margin="3" />
                             <Button Content="Розпарсити постери" Command="{Binding GetPostersCommand}" Margin="3" Grid.Column="1"/>
                             <Label Content="Пошук за назвою:" Grid.Column="2"/>
                             <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
