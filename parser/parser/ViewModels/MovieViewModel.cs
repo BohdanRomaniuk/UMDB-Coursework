@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -44,6 +45,8 @@ namespace parser.ViewModels
         private string url;
         private int fromPage=1;
         private int toPage=1;
+
+        private string searchText = "";
 
         public string UserName
         {
@@ -131,12 +134,27 @@ namespace parser.ViewModels
             }
         }
 
+        public string SearchText
+        {
+            get
+            {
+                return searchText;
+            }
+            set
+            {
+                searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                OnPropertyChanged(nameof(Movies));
+            }
+        }
+
         private ObservableCollection<Movie> movies;
         public ObservableCollection<Movie> Movies
         {
             get
             {
-                return movies;
+                //return movies;
+                return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
             }
             set
             {

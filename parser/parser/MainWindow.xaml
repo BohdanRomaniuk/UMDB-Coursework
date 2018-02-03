@@ -104,7 +104,7 @@
                             <Button Content="Отримати інф. для всіх" Command="{Binding GetInfoToAllCommand}" Margin="3" />
                             <Button Content="Розпарсити постери" Command="{Binding GetPostersCommand}" Margin="3" Grid.Column="1"/>
                             <Label Content="Пошук за назвою:" Grid.Column="2"/>
-                            <TextBox Text="{Binding SearchText}" Grid.Column="3" Margin="3"/>
+                            <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
                             <Button Content="Відкрити з xml" Command="{Binding OpenFromXmlCommand}" Margin="3" Grid.Row="1"/>
                             <Button Content="Відкрити з bin" Command="{Binding OpenFromBinaryCommand}" Margin="3" Grid.Row="1" Grid.Column="1"/>
                             <Button Content="Відкрити з БД" IsEnabled="False" Command="{Binding OpenFromDbCommand}" Margin="3" Grid.Row="1" Grid.Column="2"/>
