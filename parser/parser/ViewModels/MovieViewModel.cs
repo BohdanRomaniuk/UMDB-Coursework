@@ -333,11 +333,11 @@ namespace parser.ViewModels
                         {
                             continue;
                         }
-                        Match yearMatch = Regex.Match(name, "([0-9]{4})");
+                        Match yearMatch = Regex.Match(name, @"(\([0-9]{4}\))");
                         if(yearMatch.Success)
                         {
-                            name = name.Substring(0, yearMatch.Index-1);
-                            Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value));
+                            name = name.Substring(0, yearMatch.Index);
+                            Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
                             if (Movies.Contains(toAdd))
                             {
                                 continue;
