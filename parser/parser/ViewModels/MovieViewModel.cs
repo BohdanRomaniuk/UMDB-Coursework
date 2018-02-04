@@ -2,7 +2,6 @@
 using parser.DataTypes;
 using parser.WebLogginer;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -10,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -190,7 +188,6 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(Movies));
             }
         }
-
         #endregion parsing
 
         //ProgressBar
@@ -291,8 +288,24 @@ namespace parser.ViewModels
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
                 for(int i=urls.Count-1; i>=0; --i)
                 {
-                    name = urls[i].InnerText.Substring(0, urls[i].InnerHtml.LastIndexOf(')') + 1);
-                    Movies.Insert(0,new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(name.Substring(name.Length-5, 4))));
+                    try
+                    {
+                        name = urls[i].InnerText.Substring(0, urls[i].InnerHtml.LastIndexOf(')') + 1);
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колеція") || name.Contains("Розширена"))
+                        {
+                            continue;
+                        }
+                        Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(name.Substring(name.Length - 5, 4)));
+                        if (Movies.Contains(toAdd))
+                        {
+                            continue;
+                        }
+                        Movies.Insert(0, toAdd);
+                    }
+                    catch(Exception exc)
+                    {
+                        MessageBox.Show(exc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 ++Progress;
             }
@@ -313,7 +326,9 @@ namespace parser.ViewModels
             Progress = 0;
             Maximum = ToMovie-FromMovie-1;
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            for (int i = FromMovie; i <= ToMovie; ++i)
+            int fromIndex = Movies.Count - FromMovie;
+            int toIndex = Movies.Count - ToMovie;
+            for (int i = fromIndex; i >= toIndex; --i)
             {
                 try
                 {
@@ -337,7 +352,7 @@ namespace parser.ViewModels
                 }
                 catch(Exception exc)
                 {
-                    MessageBox.Show(exc.Message);
+                    MessageBox.Show(exc.Message+"\n"+Movies[i].Name+"\n"+Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

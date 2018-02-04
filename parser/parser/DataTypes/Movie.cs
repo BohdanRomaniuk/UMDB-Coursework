@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace parser.DataTypes
 {
     [Serializable]
-    public sealed class Movie: INotifyPropertyChanged
+    public sealed class Movie: INotifyPropertyChanged, IEquatable<Movie>
     {
         private int id;
         private string link;
@@ -283,6 +283,11 @@ namespace parser.DataTypes
             int endPos = (startPos!=-1)?text.IndexOf('\n', startPos)-1:-1;
             string parsed = (startPos != -1 && endPos != -1) ? text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length) : "Помилка";
             return (parsed[0] == ' ') ?parsed.Substring(1): parsed;
+        }
+
+        public bool Equals(Movie other)
+        {
+            return Name.Equals(other.Name);
         }
 
         [field: NonSerialized]

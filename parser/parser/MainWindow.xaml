@@ -102,7 +102,6 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Content="Розпарсити фільми" Command="{Binding OpenParseWindowCommand}" Margin="3" />
-                            <Button Content="Розпарсити постери" Command="{Binding GetPostersCommand}" Margin="3" Grid.Column="1"/>
                             <Label Content="Пошук за назвою:" Grid.Column="2"/>
                             <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
                             <Button Content="Відкрити з xml" Command="{Binding OpenFromXmlCommand}" Margin="3" Grid.Row="1"/>
