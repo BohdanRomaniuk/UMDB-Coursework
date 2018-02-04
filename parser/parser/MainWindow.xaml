@@ -102,13 +102,27 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Content="Розпарсити фільми" Command="{Binding OpenParseWindowCommand}" Margin="3" />
-                            <Label Content="Пошук за назвою:" Grid.Column="2"/>
+                            <DockPanel Grid.Column="2">
+                                <Label Content="Пошук за"/>
+                                <ComboBox Margin="3" SelectedIndex="{Binding Path=SearchType, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBoxItem Content="назвою"/>
+                                    <ComboBoxItem Content="роком"/>
+                                    <ComboBoxItem Content="жанром"/>
+                                    <ComboBoxItem Content="країною"/>
+                                    <ComboBoxItem Content="imdb"/>
+                                    <ComboBoxItem Content="режисером"/>
+                                    <ComboBoxItem Content="акторами"/>
+                                    <ComboBoxItem Content="студією"/>
+                                    <ComboBoxItem Content="сюжетом"/>
+                                </ComboBox>
+                            </DockPanel>
+                            
                             <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
-                            <Button Content="Відкрити з xml" Command="{Binding OpenFromXmlCommand}" Margin="3" Grid.Row="1"/>
+                            
                             <Button Content="Відкрити з bin" Command="{Binding OpenFromBinaryCommand}" Margin="3" Grid.Row="1" Grid.Column="1"/>
                             <Button Content="Відкрити з БД" IsEnabled="False" Command="{Binding OpenFromDbCommand}" Margin="3" Grid.Row="1" Grid.Column="2"/>
                             <Button Content="Оновити" Command="{Binding UpdateCommand}" Margin="3" Grid.Row="1" Grid.Column="3" Foreground="Red"/>
-                            <Button Content="Зберегти в xml" Command="{Binding SaveToXmlCommand}" Margin="3" Grid.Row="2"/>
+                            
                             <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2" Grid.Column="1"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
                             <Button Content="Зберегти постери" Command="" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>

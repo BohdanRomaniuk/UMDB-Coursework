@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -47,6 +48,7 @@ namespace parser.ViewModels
         private ObservableCollection<Movie> movies;
 
         private string searchText = "";
+        private int searchType = 0;
         private int fromMovie;
         private int toMovie;
 
@@ -149,6 +151,18 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(Movies));
             }
         }
+        public int SearchType
+        {
+            get
+            {
+                return searchType;
+            }
+            set
+            {
+                searchType = value;
+                OnPropertyChanged(nameof(SearchType));
+            }
+        }
         public int FromMovie
         {
             get
@@ -174,12 +188,36 @@ namespace parser.ViewModels
             }
         }
 
-       
+        private ObservableCollection<Movie> search(string what)
+        {
+            return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+        }
         public ObservableCollection<Movie> Movies
         {
             get
             {
                 //return movies;
+                //switch(SearchType)
+                //{
+                //    case 0:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 1:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Year.ToString(), SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 2:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Genre, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 3:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Countries, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 4:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.ImdbLink, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 5:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Director, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 6:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Actors, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    case 7:
+                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Story, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                //    default:
+                //        return movies;
+                //}
                 return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
             }
             set
@@ -286,25 +324,30 @@ namespace parser.ViewModels
                     doc = session.Load(Url + "-" + start);
                 });
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
-                for(int i=urls.Count-1; i>=0; --i)
+                for (int i=urls.Count-1; i>=0; --i)
                 {
                     try
                     {
-                        name = urls[i].InnerText.Substring(0, urls[i].InnerHtml.LastIndexOf(')') + 1);
-                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колеція") || name.Contains("Розширена"))
+                        name = urls[i].InnerText;
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена"))
                         {
                             continue;
                         }
-                        Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(name.Substring(name.Length - 5, 4)));
-                        if (Movies.Contains(toAdd))
+                        Match yearMatch = Regex.Match(name, "([0-9]{4})");
+                        if(yearMatch.Success)
                         {
-                            continue;
+                            name = name.Substring(0, yearMatch.Index-1);
+                            Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value));
+                            if (Movies.Contains(toAdd))
+                            {
+                                continue;
+                            }
+                            Movies.Insert(0, toAdd);
                         }
-                        Movies.Insert(0, toAdd);
                     }
                     catch(Exception exc)
                     {
-                        MessageBox.Show(exc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 ++Progress;
@@ -347,7 +390,8 @@ namespace parser.ViewModels
                     Movies[i].Companies = (companies != "Помилка") ? companies : Movie.ParseElementByNameFromText(text, "Кіностудія / кінокомпанія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
-                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
+                    //Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
+                    Movies[i].Story = text;
                     ++Progress;
                 }
                 catch(Exception exc)
