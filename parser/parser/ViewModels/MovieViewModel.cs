@@ -2,16 +2,19 @@
 using parser.DataTypes;
 using parser.WebLogginer;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -51,6 +54,8 @@ namespace parser.ViewModels
         private int searchType = 0;
         private int fromMovie;
         private int toMovie;
+        private int fromPoster;
+        private int toPoster;
 
         public string UserName
         {
@@ -138,6 +143,7 @@ namespace parser.ViewModels
             }
         }
 
+
         public string SearchText
         {
             get
@@ -185,6 +191,30 @@ namespace parser.ViewModels
             {
                 toMovie = value;
                 OnPropertyChanged(nameof(ToMovie));
+            }
+        }
+        public int FromPoster
+        {
+            get
+            {
+                return fromPoster;
+            }
+            set
+            {
+                fromPoster = value;
+                OnPropertyChanged(nameof(FromPoster));
+            }
+        }
+        public int ToPoster
+        {
+            get
+            {
+                return toPoster;
+            }
+            set
+            {
+                toPoster = value;
+                OnPropertyChanged(nameof(ToPoster));
             }
         }
 
@@ -268,6 +298,8 @@ namespace parser.ViewModels
         public ICommand SaveToBinaryCommand { get; private set; }
         public ICommand OpenParseWindowCommand { get; private set; }
         public ICommand ParseMoviesCommand { get; private set; }
+        public ICommand OpenSavePostersWindowCommand { get; private set; }
+        public ICommand SavePostersCommand { get; private set; }
         #endregion
 
         public MovieViewModel()
@@ -285,6 +317,8 @@ namespace parser.ViewModels
             SaveToBinaryCommand = new RelayCommand(SaveToBinary);
             OpenParseWindowCommand = new RelayCommand(OpenParseWindow);
             ParseMoviesCommand = new RelayCommand(ParseMovie);
+            OpenSavePostersWindowCommand = new RelayCommand(OpenSavePostersWindow);
+            SavePostersCommand = new RelayCommand(SavePosters);
         }
 
         private async void Login(object obj)
@@ -318,7 +352,7 @@ namespace parser.ViewModels
             for (int page = ToPage; page >= FromPage; --page)
             {
                 int start = page * 45 - 45;
-                HtmlDocument doc = new HtmlDocument();
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 await Task.Run(() =>
                 {
                     doc = session.Load(Url + "-" + start);
@@ -347,7 +381,7 @@ namespace parser.ViewModels
                     }
                     catch(Exception exc)
                     {
-                        MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 ++Progress;
@@ -396,7 +430,7 @@ namespace parser.ViewModels
                 }
                 catch(Exception exc)
                 {
-                    MessageBox.Show(exc.Message+"\n"+Movies[i].Name+"\n"+Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show(exc.Message+"\n"+Movies[i].Name+"\n"+Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -437,6 +471,40 @@ namespace parser.ViewModels
                     BinaryFormatter binFormater = new BinaryFormatter();
                     binFormater.Serialize(fileStr, Movies);
                 }
+            }
+        }
+
+        private void OpenSavePostersWindow(object obj)
+        {
+            SavePostersWindow spw = new SavePostersWindow(this);
+            spw.Show();
+        }
+
+        private async void SavePosters(object obj)
+        {
+            string directory = "";
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK && !String.IsNullOrEmpty(fbd.SelectedPath))
+                {
+                    directory = fbd.SelectedPath;
+                }
+            }
+            IEnumerable<Movie> selectedMovies =
+                from movie in Movies
+                where movie.Id >= FromPoster && movie.Id <= ToPoster
+                select movie;
+            Progress = 0;
+            Maximum = selectedMovies.Count();
+            WebClient webClient = new WebClient();
+            foreach (Movie movie in selectedMovies)
+            {
+                await Task.Run(() =>
+                {
+                    webClient.DownloadFile(movie.Poster, directory + "\\" + movie.PosterFileName);
+                });
+                ++Progress;
             }
         }
 

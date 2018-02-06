@@ -125,7 +125,7 @@
                             
                             <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2" Grid.Column="1"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
-                            <Button Content="Зберегти постери" Command="" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>
+                            <Button Content="Зберегти постери" Command="{Binding OpenSavePostersWindowCommand}" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
