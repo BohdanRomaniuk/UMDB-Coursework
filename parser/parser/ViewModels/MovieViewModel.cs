@@ -502,7 +502,21 @@ namespace parser.ViewModels
             {
                 await Task.Run(() =>
                 {
-                    webClient.DownloadFile(movie.Poster, directory + "\\" + movie.PosterFileName);
+                    int count = 1;
+
+                    string fullPath = directory + "\\" + movie.PosterFileName;
+                    string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+                    string extension = Path.GetExtension(fullPath);
+                    string path = Path.GetDirectoryName(fullPath);
+                    string newFullPath = fullPath;
+
+                    while (File.Exists(newFullPath))
+                    {
+                        string newFileName = string.Format("{0}_{1}", fileNameOnly, count++);
+                        newFullPath = Path.Combine(path, newFileName + extension);
+                        movie.PosterFileName = newFileName + extension;
+                    }
+                    webClient.DownloadFile(movie.Poster, newFullPath);
                 });
                 ++Progress;
             }
