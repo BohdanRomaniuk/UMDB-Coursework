@@ -424,8 +424,9 @@ namespace parser.ViewModels
                     Movies[i].Companies = (companies != "Помилка") ? companies : Movie.ParseElementByNameFromText(text, "Кіностудія / кінокомпанія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
-                    //Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
-                    Movies[i].Story = text;
+                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
+                    //Movies[i].Story = text;
+                    Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
                     ++Progress;
                 }
                 catch(Exception exc)

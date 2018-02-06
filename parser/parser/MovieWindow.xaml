@@ -37,6 +37,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -51,16 +52,18 @@
                 <TextBox Text="{Binding Path=CurrentMovie.Genre, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="3"/>
                 <Label Content="Країна" Grid.Row="4"/>
                 <TextBox Text="{Binding Path=CurrentMovie.Countries, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" Margin="3"/>
-                <Label Content="IMDB" Grid.Row="5"/>
-                <TextBox Text="{Binding Path=CurrentMovie.ImdbLink, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" Margin="3"/>
-                <Label Content="Компанії" Grid.Row="6"/>
-                <TextBox Text="{Binding Path=CurrentMovie.Companies, UpdateSourceTrigger=PropertyChanged}" Grid.Row="6" Grid.Column="1" Margin="3"/>
-                <Label Content="Режисер" Grid.Row="7"/>
-                <TextBox Text="{Binding Path=CurrentMovie.Director, UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" Grid.Column="1" Margin="3"/>
-                <Label Content="Актори" Grid.Row="8"/>
-                <TextBox Text="{Binding Path=CurrentMovie.Actors, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1" Margin="3"/>
-                <Label Content="Сюжет" Grid.Row="9"/>
-                <RichTextBox x:Name="richTextBox" Grid.Row="9" Grid.Column="1" Margin="3">
+                <Label Content="Тривалість" Grid.Row="5"/>
+                <TextBox Text="{Binding Path=CurrentMovie.Length, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" Margin="3"/>
+                <Label Content="IMDB" Grid.Row="6"/>
+                <TextBox Text="{Binding Path=CurrentMovie.ImdbLink, UpdateSourceTrigger=PropertyChanged}" Grid.Row="6" Grid.Column="1" Margin="3"/>
+                <Label Content="Компанії" Grid.Row="7"/>
+                <TextBox Text="{Binding Path=CurrentMovie.Companies, UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" Grid.Column="1" Margin="3"/>
+                <Label Content="Режисер" Grid.Row="8"/>
+                <TextBox Text="{Binding Path=CurrentMovie.Director, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1" Margin="3"/>
+                <Label Content="Актори" Grid.Row="9"/>
+                <TextBox Text="{Binding Path=CurrentMovie.Actors, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Margin="3"/>
+                <Label Content="Сюжет" Grid.Row="10"/>
+                <RichTextBox x:Name="richTextBox" Grid.Row="10" Grid.Column="1" Margin="3">
                     <FlowDocument>
                         <Paragraph>
                             <Run Text="{Binding Path=CurrentMovie.Story, UpdateSourceTrigger=PropertyChanged}"/>
@@ -68,10 +71,10 @@
                     </FlowDocument>
                 </RichTextBox>
                 <!--<TextBox Text="{Binding Path=CurrentMovie.Story, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Margin="3"/>-->
-                <Label Content="Постер" Grid.Row="10"/>
-                <TextBox Text="{Binding Path=CurrentMovie.Poster, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Margin="3"/>
-                <Label Content="Файл" Grid.Row="11"/>
-                <TextBox Text="{Binding Path=CurrentMovie.PosterFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="11" Grid.Column="1" Margin="3"/>
+                <Label Content="Постер" Grid.Row="11"/>
+                <TextBox Text="{Binding Path=CurrentMovie.Poster, UpdateSourceTrigger=PropertyChanged}" Grid.Row="11" Grid.Column="1" Margin="3"/>
+                <Label Content="Файл" Grid.Row="12"/>
+                <TextBox Text="{Binding Path=CurrentMovie.PosterFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="12" Grid.Column="1" Margin="3"/>
                 
             </Grid>
         </GroupBox>
