@@ -401,7 +401,7 @@ namespace parser.ViewModels
         private async void ParseMovie(object obj)
         {
             Progress = 0;
-            Maximum = ToMovie-FromMovie-1;
+            Maximum = ToMovie-FromMovie;
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
             int fromIndex = Movies.Count - FromMovie;
             int toIndex = Movies.Count - ToMovie;
@@ -420,12 +420,10 @@ namespace parser.ViewModels
                     string text = Movie.StripHTML(firstPost.InnerHtml);
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
-                    string companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:");
-                    Movies[i].Companies = (companies != "Помилка") ? companies : Movie.ParseElementByNameFromText(text, "Кіностудія / кінокомпанія:");
+                    Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія / кінокомпанія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
-                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:");
-                    //Movies[i].Story = text;
+                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
                     Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
                     ++Progress;
                 }

@@ -299,6 +299,21 @@ namespace parser.DataTypes
             return (parsed[0] == ' ') ?parsed.Substring(1): parsed;
         }
 
+        public static string ParseElementByNameFromText(string text, params string[] elemNames)
+        {
+            string parsedResult = "Помилка";
+            for(int i=0; i<elemNames.Length; ++i)
+            {
+                string parsedValue= ParseElementByNameFromText(text, elemNames[i]);
+                if (parsedValue!= "Помилка")
+                {
+                    parsedResult = parsedValue;
+                    break;
+                }
+            }
+            return parsedResult;
+        }
+
         public bool Equals(Movie other)
         {
             return Name.Equals(other.Name);
