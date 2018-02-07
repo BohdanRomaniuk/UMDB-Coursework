@@ -371,11 +371,12 @@ namespace parser.ViewModels
                         if(yearMatch.Success)
                         {
                             name = name.Substring(0, yearMatch.Index);
-                            Movie toAdd = new Movie(++id, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
+                            Movie toAdd = new Movie(0, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
                             if (Movies.Contains(toAdd))
                             {
                                 continue;
                             }
+                            toAdd.Id = ++id;
                             Movies.Insert(0, toAdd);
                         }
                     }
@@ -401,7 +402,7 @@ namespace parser.ViewModels
         private async void ParseMovie(object obj)
         {
             Progress = 0;
-            Maximum = ToMovie-FromMovie;
+            Maximum = ToMovie-FromMovie+1;
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
             int fromIndex = Movies.Count - FromMovie;
             int toIndex = Movies.Count - ToMovie;
@@ -420,7 +421,7 @@ namespace parser.ViewModels
                     string text = Movie.StripHTML(firstPost.InnerHtml);
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
-                    Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія / кінокомпанія:");
+                    Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
                     Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
