@@ -225,7 +225,7 @@ namespace parser.DataTypes
         {
             int startPos = html.IndexOf("imdb.com");
             int endPos = (startPos!=-1)?html.IndexOf('"', startPos):-1;
-            return (startPos!=-1 && endPos!=-1)?"https://"+html.Substring(startPos,  endPos -startPos):"Помилка";
+            return (startPos!=-1 && endPos!=-1)?"https://"+html.Substring(startPos,  endPos -startPos):"Немає";
         }
 
         public static string ParsePosterLinkFromHtml(string html)
@@ -295,17 +295,17 @@ namespace parser.DataTypes
         {
             int startPos = text.IndexOf(elemName);
             int endPos = (startPos!=-1)?text.IndexOf('\n', startPos)-1:-1;
-            string parsed = (startPos != -1 && endPos != -1) ? text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length) : "Помилка";
+            string parsed = (startPos != -1 && endPos != -1) ? text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length) : "Немає";
             return (parsed[0] == ' ') ?parsed.Substring(1): parsed;
         }
 
         public static string ParseElementByNameFromText(string text, params string[] elemNames)
         {
-            string parsedResult = "Помилка";
+            string parsedResult = "Немає";
             for(int i=0; i<elemNames.Length; ++i)
             {
-                string parsedValue= ParseElementByNameFromText(text, elemNames[i]);
-                if (parsedValue!= "Помилка")
+                string parsedValue = ParseElementByNameFromText(text, elemNames[i]);
+                if (parsedValue!= "Немає")
                 {
                     parsedResult = parsedValue;
                     break;

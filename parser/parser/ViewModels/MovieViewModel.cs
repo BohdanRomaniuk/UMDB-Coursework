@@ -293,6 +293,7 @@ namespace parser.ViewModels
         public ICommand LoginCommand { get; private set; }
         public ICommand ClearCommand { get; private set; }
         public ICommand GetAllInfoCommand { get; private set; }
+        public ICommand UpdateCommand { get; private set; }
         public ICommand ShowMovieCommand { get; private set; }
         public ICommand OpenFromBinaryCommand { get; private set; }
         public ICommand SaveToBinaryCommand { get; private set; }
@@ -312,6 +313,7 @@ namespace parser.ViewModels
             LoginCommand = new RelayCommand(Login);
             ClearCommand = new RelayCommand(Clear);
             GetAllInfoCommand = new RelayCommand(GetAllInfo);
+            UpdateCommand = new RelayCommand(Update);
             ShowMovieCommand = new RelayCommand(ShowMovie);
             OpenFromBinaryCommand = new RelayCommand(OpenFromBinary);
             SaveToBinaryCommand = new RelayCommand(SaveToBinary);
@@ -386,6 +388,68 @@ namespace parser.ViewModels
                     }
                 }
                 ++Progress;
+            }
+        }
+
+        private async void Update(object obj)
+        {
+            Progress = 0;
+            Maximum = ToPage - FromPage + 1;
+            int id = Movies.FirstOrDefault().Id;
+            string name = "";
+            LinkedList<Movie> toUpdate = new LinkedList<Movie>();
+            for (int page = ToPage; page >= FromPage; --page)
+            {
+                int start = page * 45 - 45;
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                await Task.Run(() =>
+                {
+                    doc = session.Load(Url + "-" + start);
+                });
+                HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
+                for (int i = urls.Count - 1; i >= 0; --i)
+                {
+                    try
+                    {
+                        name = urls[i].InnerText;
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена"))
+                        {
+                            continue;
+                        }
+                        Match yearMatch = Regex.Match(name, @"(\([0-9]{4}\))");
+                        if (yearMatch.Success)
+                        {
+                            name = name.Substring(0, yearMatch.Index);
+                            Movie toAdd = new Movie(0, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1, 4)));
+                            if (Movies.Contains(toAdd))
+                            {
+                                continue;
+                            }
+                            toAdd.Id = ++id;
+                            toUpdate.AddLast(toAdd);
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                ++Progress;
+            }
+            if (toUpdate.Count!=0)
+            {
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(String.Format("Знайдено {0} нових фільмів!\nОновити список?", toUpdate.Count), "Важлива інформація", System.Windows.MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    foreach(Movie movie in toUpdate)
+                    {
+                        Movies.Insert(0, movie);
+                    }
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Нових фільмів не знайдено", "Важлива інформація", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
             }
         }
 
