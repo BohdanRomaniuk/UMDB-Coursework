@@ -254,6 +254,7 @@ namespace parser.ViewModels
             {
                 movies = value;
                 OnPropertyChanged(nameof(Movies));
+                OnPropertyChanged(nameof(MoviesCount));
             }
         }
         #endregion parsing
@@ -288,6 +289,15 @@ namespace parser.ViewModels
         }
         #endregion progress bar
 
+        public int MoviesCount
+        {
+            get
+            {
+                return movies.Count;
+            }
+            private set { }
+        }
+
         //Commands
         #region commands
         public ICommand LoginCommand { get; private set; }
@@ -299,6 +309,7 @@ namespace parser.ViewModels
         public ICommand SaveToBinaryCommand { get; private set; }
         public ICommand OpenParseWindowCommand { get; private set; }
         public ICommand ParseMoviesCommand { get; private set; }
+        public ICommand ClearDirAndActorsCommand { get; private set; }
         public ICommand OpenSavePostersWindowCommand { get; private set; }
         public ICommand SavePostersCommand { get; private set; }
         #endregion
@@ -319,6 +330,7 @@ namespace parser.ViewModels
             SaveToBinaryCommand = new RelayCommand(SaveToBinary);
             OpenParseWindowCommand = new RelayCommand(OpenParseWindow);
             ParseMoviesCommand = new RelayCommand(ParseMovie);
+            ClearDirAndActorsCommand = new RelayCommand(ClearDirAndActors);
             OpenSavePostersWindowCommand = new RelayCommand(OpenSavePostersWindow);
             SavePostersCommand = new RelayCommand(SavePosters);
         }
@@ -487,7 +499,7 @@ namespace parser.ViewModels
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
                     Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
-                    Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:");
+                    Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "Оповідач:");
                     Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
                     Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
                     ++Progress;
@@ -496,6 +508,20 @@ namespace parser.ViewModels
                 {
                     System.Windows.MessageBox.Show(exc.Message+"\n"+Movies[i].Name+"\n"+Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+        }
+
+        private async void ClearDirAndActors(object obj)
+        {
+            for(int i=0; i<Movies.Count; ++i)
+            {
+                await Task.Run(() =>
+                {
+                    Movies[i].Director = Regex.Replace(Movies[i].Director, "[A-Za-z/()]", "");
+                    Movies[i].Actors = Regex.Replace(Movies[i].Actors, "[A-Za-z/()]", "");
+                    Movies[i].Actors = Regex.Replace(Movies[i].Actors, "[ ]{2,}", " ");
+                    Movies[i].Actors = Regex.Replace(Movies[i].Actors, "[ ],", ",");
+                });
             }
         }
 

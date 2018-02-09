@@ -31,9 +31,10 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.7*"/>
                         <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="0.8*"/>
                     </Grid.ColumnDefinitions>
                     <GroupBox Header="Користувач" Grid.Column="0" Margin="3,0,3,3">
                         <Grid>
@@ -54,7 +55,25 @@
                             <Button Command="{Binding LoginCommand}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Content="Увійти"  Width="75" Margin="3"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Розділ" Grid.Column="1" Margin="3,0,3,3">
+                    <GroupBox Header="Статистика" Grid.Column="1" Margin="3,0,3,3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Усього фільмів:"/>
+                            <Label FontWeight="Bold" Content="{Binding Path=MoviesCount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+                            <Label Content="Відображено:" Grid.Row="1"/>
+                            <Label FontWeight="Bold" Content="{Binding Path=Movies.Count, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
+                            <Label Content="Ще щось:" Grid.Row="2"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Розділ" Grid.Column="2" Margin="3,0,3,3">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -78,7 +97,7 @@
                                 <Label Content="до" Grid.Column="1"/>
                                 <TextBox Text="{Binding ToPage}"  Margin="3" Grid.Column="2"/>
                             </Grid>
-                            <Grid Grid.Row="2" Grid.Column="1">
+                            <Grid Grid.Row="2" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="0.5*"/>
                                     <ColumnDefinition Width="0.5*"/>
@@ -88,7 +107,7 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Тема" Grid.Column="2" Margin="3,0,3,3">
+                    <GroupBox Header="Тема" Grid.Column="3" Margin="3,0,3,3">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -102,6 +121,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Content="Розпарсити фільми" Command="{Binding OpenParseWindowCommand}" Margin="3" />
+                            <Button Content="Очистити реж і акт" Command="{Binding ClearDirAndActorsCommand}" Grid.Column="1" Margin="3" />
                             <DockPanel Grid.Column="2">
                                 <Label Content="Пошук за"/>
                                 <ComboBox Margin="3" SelectedIndex="{Binding Path=SearchType, UpdateSourceTrigger=PropertyChanged}">
@@ -116,16 +136,13 @@
                                     <ComboBoxItem Content="сюжетом"/>
                                 </ComboBox>
                             </DockPanel>
-                            
                             <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
-                            
                             <Button Content="Відкрити з bin" Command="{Binding OpenFromBinaryCommand}" Margin="3" Grid.Row="1" />
                             <Button Content="Відкрити з БД" IsEnabled="False" Command="{Binding OpenFromDbCommand}" Margin="3" Grid.Row="1" Grid.Column="2"/>
-                            <Button Content="Оновити" Command="{Binding UpdateCommand}" Margin="3" Grid.Row="1" Grid.Column="3" Foreground="Red"/>
-                            
+                            <Button Content="Оновити" Command="{Binding UpdateCommand}" Margin="3" Grid.Row="1" Grid.Column="1" Foreground="Red"/>
+                            <Button Content="Зберегти постери" Command="{Binding OpenSavePostersWindowCommand}" Margin="3" Grid.Row="2" Grid.Column="1" Foreground="Green"/>
                             <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
-                            <Button Content="Зберегти постери" Command="{Binding OpenSavePostersWindowCommand}" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Green"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
