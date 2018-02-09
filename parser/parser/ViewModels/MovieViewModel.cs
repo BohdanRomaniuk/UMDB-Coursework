@@ -11,9 +11,11 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -38,7 +40,6 @@ namespace parser.ViewModels
             }
         }
         private string userName;
-        private string userPassword;
         private string status = "[Офлайн]";
         private Brush statusColor = Brushes.Red;
         #endregion logining
@@ -67,18 +68,6 @@ namespace parser.ViewModels
             {
                 userName = value;
                 OnPropertyChanged(nameof(UserName));
-            }
-        }
-        public string UserPassword
-        {
-            get
-            {
-                return userPassword;
-            }
-            set
-            {
-                userPassword = value;
-                OnPropertyChanged(nameof(UserPassword));
             }
         }
         public string Status
@@ -318,7 +307,6 @@ namespace parser.ViewModels
         {
             Session = new BrowserSession();
             UserName = "bohdan2307";
-            UserPassword = "BOHDAN09731353740973135374";
             Movies = new ObservableCollection<Movie>();
 
             LoginCommand = new RelayCommand(Login);
@@ -337,18 +325,21 @@ namespace parser.ViewModels
 
         private async void Login(object obj)
         {
-            await Task.Run(() =>
+            if(obj!=null)
             {
-                Session.Get("https://toloka.to/login.php");
-                Session.FormElements["username"] = UserName;
-                Session.FormElements["password"] = UserPassword;
-                Session.Post("https://toloka.to/login.php");
-                if (Session.Cookies.Count != 0)
+                await Task.Run(() =>
                 {
-                    Status = "[Онлайн]";
-                    StatusColor = Brushes.Green;
-                }
-            });
+                    Session.Get("https://toloka.to/login.php");
+                    Session.FormElements["username"] = UserName;
+                    Session.FormElements["password"] = (obj as PasswordBox).Password;
+                    Session.Post("https://toloka.to/login.php");
+                    if (Session.Cookies.Count != 0)
+                    {
+                        Status = "[Онлайн]";
+                        StatusColor = Brushes.Green;
+                    }
+                });
+            }
         }
 
         private void Clear(object obj)
