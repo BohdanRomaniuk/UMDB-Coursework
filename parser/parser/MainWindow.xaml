@@ -176,7 +176,7 @@
                         <Border Grid.Column="10" Name="moviewidth11"></Border>
                         <Border Grid.Column="11" Name="moviewidth12"></Border>
                     </Grid>
-                    <ListView x:Name="tops" HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Path=Movies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="trimmed">
+                    <ListView x:Name="tops" HorizontalAlignment="Left" Margin="3" ItemsSource="{Binding Path=Movies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="trimmed">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding ShowMovieCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}"/>

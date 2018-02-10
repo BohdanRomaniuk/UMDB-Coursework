@@ -301,17 +301,15 @@ namespace parser.DataTypes
 
         public static string ParseElementByNameFromText(string text, params string[] elemNames)
         {
-            string parsedResult = "Немає";
             for(int i=0; i<elemNames.Length; ++i)
             {
                 string parsedValue = ParseElementByNameFromText(text, elemNames[i]);
                 if (parsedValue!= "Немає")
                 {
-                    parsedResult = parsedValue;
-                    break;
+                    return parsedValue;
                 }
             }
-            return parsedResult;
+            return "Немає";
         }
 
         public bool Equals(Movie other)

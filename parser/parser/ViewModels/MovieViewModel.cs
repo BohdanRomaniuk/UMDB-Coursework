@@ -488,7 +488,7 @@ namespace parser.ViewModels
                     string text = Movie.StripHTML(firstPost.InnerHtml);
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
-                    Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:");
+                    Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:", "Телеканал / кіностудія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "Оповідач:");
                     Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
