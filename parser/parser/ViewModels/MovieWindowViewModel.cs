@@ -55,7 +55,7 @@ namespace parser.ViewModels
             }
             catch(Exception exc)
             {
-                MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
+                MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             CopyPosterUrlCommand = new RelayCommand(CopyPosterUrl);
             SavePosterAsCommand = new RelayCommand(SavePosterAs);
@@ -85,7 +85,7 @@ namespace parser.ViewModels
                 }
                 catch (Exception exc)
                 {
-                    MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
+                    MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

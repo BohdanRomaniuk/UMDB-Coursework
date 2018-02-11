@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -352,7 +353,6 @@ namespace parser.ViewModels
             Movies.Clear();
             Progress = 0;
             Maximum = ToPage - FromPage + 1;
-            int id = 0;
             string name = "";
             for (int page = ToPage; page >= FromPage; --page)
             {
@@ -376,18 +376,17 @@ namespace parser.ViewModels
                         if(yearMatch.Success)
                         {
                             name = name.Substring(0, yearMatch.Index);
-                            Movie toAdd = new Movie(0, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
+                            Movie toAdd = new Movie(name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
                             if (Movies.Contains(toAdd))
                             {
                                 continue;
                             }
-                            toAdd.Id = ++id;
                             Movies.Insert(0, toAdd);
                         }
                     }
                     catch(Exception exc)
                     {
-                        System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count-i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 ++Progress;
@@ -398,7 +397,6 @@ namespace parser.ViewModels
         {
             Progress = 0;
             Maximum = ToPage - FromPage + 1;
-            int id = Movies.FirstOrDefault().Id;
             string name = "";
             LinkedList<Movie> toUpdate = new LinkedList<Movie>();
             for (int page = ToPage; page >= FromPage; --page)
@@ -423,18 +421,17 @@ namespace parser.ViewModels
                         if (yearMatch.Success)
                         {
                             name = name.Substring(0, yearMatch.Index);
-                            Movie toAdd = new Movie(0, name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1, 4)));
+                            Movie toAdd = new Movie(name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1, 4)));
                             if (Movies.Contains(toAdd))
                             {
                                 continue;
                             }
-                            toAdd.Id = ++id;
                             toUpdate.AddLast(toAdd);
                         }
                     }
                     catch (Exception exc)
                     {
-                        System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Id + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count-i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 ++Progress;
@@ -570,43 +567,41 @@ namespace parser.ViewModels
                 if (result == DialogResult.OK && !String.IsNullOrEmpty(fbd.SelectedPath))
                 {
                     directory = fbd.SelectedPath;
-                }
-            }
-            IEnumerable<Movie> selectedMovies =
-                from movie in Movies
-                where movie.Id >= FromPoster && movie.Id <= ToPoster
-                select movie;
-            Progress = 0;
-            Maximum = selectedMovies.Count();
-            WebClient webClient = new WebClient();
-            foreach (Movie movie in selectedMovies)
-            {
-                try
-                {
-                    await Task.Run(() =>
+                    Progress = 0;
+                    Maximum = ToPoster - FromPoster + 1;
+                    int from = Movies.Count - ToPoster;
+                    int to = Movies.Count - FromPoster;
+                    WebClient webClient = new WebClient();
+                    for (int i = from; i <= to; ++i)
                     {
-                        int count = 1;
-
-                        string fullPath = directory + "\\" + movie.PosterFileName;
-                        string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
-                        string extension = Path.GetExtension(fullPath);
-                        string path = Path.GetDirectoryName(fullPath);
-                        string newFullPath = fullPath;
-
-                        while (File.Exists(newFullPath))
+                        try
                         {
-                            string newFileName = string.Format("{0}_{1}", fileNameOnly, count++);
-                            newFullPath = Path.Combine(path, newFileName + extension);
-                            movie.PosterFileName = newFileName + extension;
+                            await Task.Run(() =>
+                            {
+                                int count = 1;
+
+                                string fullPath = directory + "\\" + Movies[i].PosterFileName;
+                                string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+                                string extension = Path.GetExtension(fullPath);
+                                string path = Path.GetDirectoryName(fullPath);
+                                string newFullPath = fullPath;
+
+                                while (File.Exists(newFullPath))
+                                {
+                                    string newFileName = string.Format("{0}_{1}", fileNameOnly, count++);
+                                    newFullPath = Path.Combine(path, newFileName + extension);
+                                    Movies[i].PosterFileName = newFileName + extension;
+                                }
+                                webClient.DownloadFile(Movies[i].Poster, newFullPath);
+                            });
                         }
-                        webClient.DownloadFile(movie.Poster, newFullPath);
-                    });
+                        catch (Exception exc)
+                        {
+                            System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        ++Progress;
+                    }
                 }
-                catch (Exception exc)
-                {
-                    System.Windows.MessageBox.Show(exc.Message + "\n" + movie.Name + "\n" + movie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
-                }
-                ++Progress;
             }
         }
 
@@ -614,6 +609,21 @@ namespace parser.ViewModels
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class DateConverter : IValueConverter
+    {
+        public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
+        {
+            System.Windows.Controls.ListViewItem item = (System.Windows.Controls.ListViewItem)value;
+            System.Windows.Controls.ListView listView = ItemsControl.ItemsControlFromItemContainer(item) as System.Windows.Controls.ListView;
+            int index = listView.ItemContainerGenerator.IndexFromContainer(item);
+            return (index + 1).ToString();
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

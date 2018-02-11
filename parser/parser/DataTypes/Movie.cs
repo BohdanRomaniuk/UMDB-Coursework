@@ -9,9 +9,8 @@ namespace parser.DataTypes
     [Serializable]
     public sealed class Movie: INotifyPropertyChanged, IEquatable<Movie>
     {
-        private int id;
-        private string link;
         private string name;
+        private string link;
         private int year;       
         private string genre;
         private string countries;
@@ -24,30 +23,6 @@ namespace parser.DataTypes
         private string poster;
         private string posterFileName;
 
-        public int Id
-        {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                id = value;
-                OnPropertyChanged(nameof(Id));
-            }
-        }
-        public string Link
-        {
-            get
-            {
-                return link;
-            }
-            set
-            {
-                link = value;
-                OnPropertyChanged(nameof(Link));
-            }
-        }
         public string Name
         {
             get
@@ -60,6 +35,18 @@ namespace parser.DataTypes
                 PosterFileName = CreatePosterFileName(value + " (" + Year +")", Poster);
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(PosterFileName));
+            }
+        }
+        public string Link
+        {
+            get
+            {
+                return link;
+            }
+            set
+            {
+                link = value;
+                OnPropertyChanged(nameof(Link));
             }
         }
         public int Year
@@ -198,9 +185,8 @@ namespace parser.DataTypes
         }
 
         public Movie() { }
-        public Movie(int _id, string _name, string _link="http://", int _year=0, string _genre="немає", string _countries="відсутні", string _length="00:00:00", string _imdb="http://", string _companies = "відсутні", string _director="немає", string _actors="немає", string _story="немає", string _poster="немає", string _posterFileName="немає")
+        public Movie(string _name, string _link="http://", int _year=0, string _genre="немає", string _countries="відсутні", string _length="00:00:00", string _imdb="http://", string _companies = "відсутні", string _director="немає", string _actors="немає", string _story="немає", string _poster="немає", string _posterFileName="немає")
         {
-            Id = _id;
             Name = _name;
             Link = _link;
             Year = _year;
@@ -218,7 +204,7 @@ namespace parser.DataTypes
 
         public override string ToString()
         {
-            return String.Format("{0,-10}{1,-10}{2,-10}{3,-10}{4,-10}{5,-10}{6,-10}{7,-10}{8,-10}{9,-10}{10,-10}{11,-10}", Id, Name, Link, Year, Genre, Countries, Length, ImdbLink, Companies, Director, Actors, Story, Poster, PosterFileName);
+            return String.Format("{0,-10}{1,-10}{2,-10}{3,-10}{4,-10}{5,-10}{6,-10}{7,-10}{8,-10}{9,-10}{10,-10}", Name, Link, Year, Genre, Countries, Length, ImdbLink, Companies, Director, Actors, Story, Poster, PosterFileName);
         }
 
         public static string ParseImdbLinkFromHtml(string html)

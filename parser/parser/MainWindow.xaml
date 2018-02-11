@@ -192,10 +192,11 @@
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                                 <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text }" />
                             </Style>
+                            <local:IdConverter x:Key="IndexConverter"/>
                         </ListView.Resources>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="№" Width="{Binding ElementName=moviewidth1, Path=ActualWidth}" DisplayMemberBinding="{Binding Id}" />
+                                <GridViewColumn Header="№" Width="{Binding ElementName=moviewidth1, Path=ActualWidth}" DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}} , Converter={StaticResource IndexConverter}}" />
                                 <GridViewColumn Header="Назва" Width="{Binding ElementName=moviewidth2, Path=ActualWidth}" DisplayMemberBinding="{Binding Name}" />
                                 <GridViewColumn Header="Рік" Width="{Binding ElementName=moviewidth3, Path=ActualWidth}" DisplayMemberBinding="{Binding Year}" />
                                 <GridViewColumn Header="Жанр" Width="{Binding ElementName=moviewidth4, Path=ActualWidth}" DisplayMemberBinding="{Binding Genre}" />
