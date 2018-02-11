@@ -325,7 +325,7 @@ namespace parser.ViewModels
 
         private async void Login(object obj)
         {
-            if(obj!=null)
+            if (obj != null)
             {
                 await Task.Run(() =>
                 {
@@ -368,7 +368,7 @@ namespace parser.ViewModels
                     try
                     {
                         name = urls[i].InnerText;
-                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена"))
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена") || name.Contains("Театральна версія") || name.Contains("[UNRATED]") || name.Contains("[3D]"))
                         {
                             continue;
                         }
@@ -489,7 +489,7 @@ namespace parser.ViewModels
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
                     Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:", "Телеканал / кіностудія:");
-                    Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:");
+                    Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:", "Режисери:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "Оповідач:");
                     Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
                     Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
@@ -581,24 +581,31 @@ namespace parser.ViewModels
             WebClient webClient = new WebClient();
             foreach (Movie movie in selectedMovies)
             {
-                await Task.Run(() =>
+                try
                 {
-                    int count = 1;
-
-                    string fullPath = directory + "\\" + movie.PosterFileName;
-                    string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
-                    string extension = Path.GetExtension(fullPath);
-                    string path = Path.GetDirectoryName(fullPath);
-                    string newFullPath = fullPath;
-
-                    while (File.Exists(newFullPath))
+                    await Task.Run(() =>
                     {
-                        string newFileName = string.Format("{0}_{1}", fileNameOnly, count++);
-                        newFullPath = Path.Combine(path, newFileName + extension);
-                        movie.PosterFileName = newFileName + extension;
-                    }
-                    webClient.DownloadFile(movie.Poster, newFullPath);
-                });
+                        int count = 1;
+
+                        string fullPath = directory + "\\" + movie.PosterFileName;
+                        string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+                        string extension = Path.GetExtension(fullPath);
+                        string path = Path.GetDirectoryName(fullPath);
+                        string newFullPath = fullPath;
+
+                        while (File.Exists(newFullPath))
+                        {
+                            string newFileName = string.Format("{0}_{1}", fileNameOnly, count++);
+                            newFullPath = Path.Combine(path, newFileName + extension);
+                            movie.PosterFileName = newFileName + extension;
+                        }
+                        webClient.DownloadFile(movie.Poster, newFullPath);
+                    });
+                }
+                catch (Exception exc)
+                {
+                    System.Windows.MessageBox.Show(exc.Message + "\n" + movie.Name + "\n" + movie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
+                }
                 ++Progress;
             }
         }

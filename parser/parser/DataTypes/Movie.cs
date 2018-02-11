@@ -57,7 +57,7 @@ namespace parser.DataTypes
             set
             {
                 name = value;
-                PosterFileName = CreatePosterFileName(value, Poster);
+                PosterFileName = CreatePosterFileName(value + " (" + Year +")", Poster);
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(PosterFileName));
             }
@@ -179,7 +179,7 @@ namespace parser.DataTypes
             set
             {
                 poster = value;
-                PosterFileName = CreatePosterFileName(Name,value);
+                PosterFileName = CreatePosterFileName(Name + " (" + Year + ")", value);
                 OnPropertyChanged(nameof(Poster));
                 OnPropertyChanged(nameof(PosterFileName));
             }
@@ -235,8 +235,8 @@ namespace parser.DataTypes
             int ind1 = html.IndexOf("posters.hurtom.com");
             int ind2 = (ind1 != -1) ? html.IndexOf('"', ind1) : -1;
 
-            int ind3 = html.IndexOf("toloka.to/photos/");
-            int ind4 = (ind3 != -1) ? html.IndexOf('"', ind3) : -1;
+            //int ind3 = html.IndexOf("toloka.to/photos/");
+            //int ind4 = (ind3 != -1) ? html.IndexOf('"', ind3) : -1;
 
             //int ind5 = html.IndexOf("img.hurtom.com/");
             //int ind6 = (ind5 != -1) ? html.IndexOf('"', ind5) : -1;
@@ -248,10 +248,10 @@ namespace parser.DataTypes
             {
                 url = "https://" + html.Substring(ind1, ind2 - ind1);
             }
-            else if (ind3 != -1 && ind4 != -1)
-            {
-                url = "https://" + html.Substring(ind3, ind4 - ind3);
-            }
+            //else if (ind3 != -1 && ind4 != -1)
+            //{
+            //    url = "https://" + html.Substring(ind3, ind4 - ind3);
+            //}
             //else if (ind5 != -1 && ind6 != -1)
             //{
             //    url = "https://" + html.Substring(ind5, ind6 - ind5);
@@ -304,7 +304,7 @@ namespace parser.DataTypes
             for(int i=0; i<elemNames.Length; ++i)
             {
                 string parsedValue = ParseElementByNameFromText(text, elemNames[i]);
-                if (parsedValue!= "Немає")
+                if (parsedValue != "Немає")
                 {
                     return parsedValue;
                 }

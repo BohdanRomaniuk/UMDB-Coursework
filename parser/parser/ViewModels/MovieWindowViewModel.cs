@@ -45,10 +45,17 @@ namespace parser.ViewModels
 
         public MovieWindowViewModel(Movie _currentMovie)
         {
-            CurrentMovie = _currentMovie;
-            if(_currentMovie.Poster!= "немає")
+            try
             {
-                PosterImage = new BitmapImage(new Uri(_currentMovie.Poster));
+                CurrentMovie = _currentMovie;
+                if (_currentMovie.Poster != "немає")
+                {
+                    PosterImage = new BitmapImage(new Uri(_currentMovie.Poster));
+                }
+            }
+            catch(Exception exc)
+            {
+                MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
             }
             CopyPosterUrlCommand = new RelayCommand(CopyPosterUrl);
             SavePosterAsCommand = new RelayCommand(SavePosterAs);
@@ -67,12 +74,19 @@ namespace parser.ViewModels
             saveFileDialog.Filter = "Картинки (*.jpg, *.png, *.gif, *.jpeg, *.bmp)|*.jpg;*.png;*.gif;*.jpeg;*.bmp|Усі файли (*.*)|*.*";
             if (saveFileDialog.ShowDialog() == true)
             {
-                string fileName = saveFileDialog.FileName;
-                await Task.Run(() =>
+                try
                 {
-                    WebClient webClient = new WebClient();
-                    webClient.DownloadFile(CurrentMovie.Poster, fileName);
-                });
+                    string fileName = saveFileDialog.FileName;
+                    await Task.Run(() =>
+                    {
+                        WebClient webClient = new WebClient();
+                        webClient.DownloadFile(CurrentMovie.Poster, fileName);
+                    });
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message + "\n" + CurrentMovie.Name + "\n" + CurrentMovie.Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);)
+                }
             }
         }
 
