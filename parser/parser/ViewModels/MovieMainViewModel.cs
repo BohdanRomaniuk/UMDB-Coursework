@@ -363,11 +363,12 @@ namespace parser.ViewModels
 
         private async void GetAllInfo(object obj)
         {
+            ErrorsCount = 0;
             Movies.Clear();
             Progress = 0;
             Maximum = ToPage - FromPage + 1;
             string name = "";
-            for (int page = ToPage; page >= FromPage; --page)
+            for (int page = FromPage; page <= ToPage; ++page)
             {
                 int start = page * 45 - 45;
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
@@ -376,7 +377,7 @@ namespace parser.ViewModels
                     doc = session.Load(Url + "-" + start);
                 });
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
-                for (int i=urls.Count-1; i>=0; --i)
+                for(int i=0; i<urls.Count; ++i)
                 {
                     try
                     {
@@ -394,7 +395,7 @@ namespace parser.ViewModels
                             {
                                 continue;
                             }
-                            Movies.Insert(0, toAdd);
+                            Movies.Add(toAdd);
                         }
                     }
                     catch(Exception exc)
@@ -409,11 +410,12 @@ namespace parser.ViewModels
 
         private async void Update(object obj)
         {
+            ErrorsCount = 0;
             Progress = 0;
             Maximum = ToPage - FromPage + 1;
             string name = "";
             LinkedList<Movie> toUpdate = new LinkedList<Movie>();
-            for (int page = ToPage; page >= FromPage; --page)
+            for (int page = FromPage; page <= ToPage; ++page)
             {
                 int start = page * 45 - 45;
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
@@ -422,12 +424,12 @@ namespace parser.ViewModels
                     doc = session.Load(Url + "-" + start);
                 });
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
-                for (int i = urls.Count - 1; i >= 0; --i)
+                for (int i = 0; i <= urls.Count; ++i)
                 {
                     try
                     {
                         name = urls[i].InnerText;
-                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена"))
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена") || name.Contains("Театральна версія") || name.Contains("[UNRATED]") || name.Contains("[3D]"))
                         {
                             continue;
                         }
@@ -440,7 +442,7 @@ namespace parser.ViewModels
                             {
                                 continue;
                             }
-                            toUpdate.AddLast(toAdd);
+                            toUpdate.AddFirst(toAdd);
                         }
                     }
                     catch (Exception exc)
@@ -480,6 +482,7 @@ namespace parser.ViewModels
 
         private async void ParseMovie(object obj)
         {
+            ErrorsCount = 0;
             Progress = 0;
             Maximum = ToMovie-FromMovie+1;
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
