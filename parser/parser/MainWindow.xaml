@@ -71,7 +71,8 @@
                             <Label FontWeight="Bold" Content="{Binding Path=MoviesCount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
                             <Label Content="Відображено:" Grid.Row="1"/>
                             <Label FontWeight="Bold" Content="{Binding Path=Movies.Count, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
-                            <Label Content="Ще щось:" Grid.Row="2"/>
+                            <Label Content="Помилок:" Grid.Row="2"/>
+                            <Label FontWeight="Bold" Foreground="Red" Content="{Binding Path=ErrorsCount, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Розділ" Grid.Column="2" Margin="3,0,3,3">
@@ -144,6 +145,7 @@
                             <Button Content="Зберегти постери" Command="{Binding OpenSavePostersWindowCommand}" Margin="3" Grid.Row="2" Grid.Column="1" Foreground="Green"/>
                             <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
+                            <Button Content="Оновити IMDB" Command="{Binding UpdateImdbLinkCommand}" Margin="3" Grid.Row="1" Grid.Column="3"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

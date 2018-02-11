@@ -75,7 +75,7 @@
     <Compile Include="SavePostersWindow.xaml.cs">
       <DependentUpon>SavePostersWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MovieViewModel.cs" />
+    <Compile Include="ViewModels\MovieMainViewModel.cs" />
     <Compile Include="ViewModels\MovieWindowViewModel.cs" />
     <Compile Include="WebLogginer\BrowserSession.cs" />
     <Compile Include="WebLogginer\FormElementCollection.cs" />

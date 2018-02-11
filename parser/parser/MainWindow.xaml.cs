@@ -26,7 +26,7 @@ namespace parser
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MovieViewModel();
+            DataContext = new MovieMainViewModel();
         }
     }
 }

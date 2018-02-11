@@ -5,7 +5,7 @@ namespace parser
 {
     public partial class ParsingPagesWindow : Window
     {
-        public ParsingPagesWindow(MovieViewModel _model)
+        public ParsingPagesWindow(MovieMainViewModel _model)
         {
             InitializeComponent();
             DataContext = _model;

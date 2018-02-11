@@ -23,7 +23,7 @@ using System.Windows.Media;
 
 namespace parser.ViewModels
 {
-    public class MovieViewModel: INotifyPropertyChanged
+    public class MovieMainViewModel : INotifyPropertyChanged
     {
         //Logining
         #region logining
@@ -58,6 +58,7 @@ namespace parser.ViewModels
         private int toMovie;
         private int fromPoster;
         private int toPoster;
+        private int errorsCount = 0;
 
         public string UserName
         {
@@ -207,6 +208,18 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(ToPoster));
             }
         }
+        public int ErrorsCount
+        {
+            get
+            {
+                return errorsCount;
+            }
+            set
+            {
+                errorsCount = value;
+                OnPropertyChanged(nameof(ErrorsCount));
+            }
+        }
 
         private ObservableCollection<Movie> search(string what)
         {
@@ -304,7 +317,7 @@ namespace parser.ViewModels
         public ICommand SavePostersCommand { get; private set; }
         #endregion
 
-        public MovieViewModel()
+        public MovieMainViewModel()
         {
             Session = new BrowserSession();
             UserName = "bohdan2307";
@@ -386,6 +399,7 @@ namespace parser.ViewModels
                     }
                     catch(Exception exc)
                     {
+                        ++ErrorsCount;
                         System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count-i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -431,6 +445,7 @@ namespace parser.ViewModels
                     }
                     catch (Exception exc)
                     {
+                        ++ErrorsCount;
                         System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count-i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -494,6 +509,7 @@ namespace parser.ViewModels
                 }
                 catch(Exception exc)
                 {
+                    ++ErrorsCount;
                     System.Windows.MessageBox.Show(exc.Message+"\n"+Movies[i].Name+"\n"+Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -574,12 +590,12 @@ namespace parser.ViewModels
                     WebClient webClient = new WebClient();
                     for (int i = from; i <= to; ++i)
                     {
-                        try
+
+                        await Task.Run(() =>
                         {
-                            await Task.Run(() =>
+                            try
                             {
                                 int count = 1;
-
                                 string fullPath = directory + "\\" + Movies[i].PosterFileName;
                                 string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
                                 string extension = Path.GetExtension(fullPath);
@@ -593,37 +609,28 @@ namespace parser.ViewModels
                                     Movies[i].PosterFileName = newFileName + extension;
                                 }
                                 webClient.DownloadFile(Movies[i].Poster, newFullPath);
-                            });
-                        }
-                        catch (Exception exc)
-                        {
-                            System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                            }
+                            catch (WebException wexc)
+                            {
+                                ++ErrorsCount;
+                                Movies[i].PosterFileName = "no_poster.jpg";
+                                System.Windows.MessageBox.Show(wexc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Помилка завантаження", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            catch (Exception exc)
+                            {
+                                ++ErrorsCount;
+                                System.Windows.MessageBox.Show(exc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        });
                         ++Progress;
                     }
                 }
             }
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class DateConverter : IValueConverter
-    {
-        public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
-        {
-            System.Windows.Controls.ListViewItem item = (System.Windows.Controls.ListViewItem)value;
-            System.Windows.Controls.ListView listView = ItemsControl.ItemsControlFromItemContainer(item) as System.Windows.Controls.ListView;
-            int index = listView.ItemContainerGenerator.IndexFromContainer(item);
-            return (index + 1).ToString();
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

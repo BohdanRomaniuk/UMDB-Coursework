@@ -6,7 +6,7 @@ namespace parser
     public partial class SavePostersWindow : Window
     {
 
-        public SavePostersWindow(MovieViewModel movieViewModel)
+        public SavePostersWindow(MovieMainViewModel movieViewModel)
         {
             InitializeComponent();
             DataContext = movieViewModel;
