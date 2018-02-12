@@ -315,6 +315,7 @@ namespace parser.ViewModels
         public ICommand ClearDirAndActorsCommand { get; private set; }
         public ICommand OpenSavePostersWindowCommand { get; private set; }
         public ICommand SavePostersCommand { get; private set; }
+        public ICommand UpdateImdbLinkCommand { get; private set; }
         #endregion
 
         public MovieMainViewModel()
@@ -335,6 +336,7 @@ namespace parser.ViewModels
             ClearDirAndActorsCommand = new RelayCommand(ClearDirAndActors);
             OpenSavePostersWindowCommand = new RelayCommand(OpenSavePostersWindow);
             SavePostersCommand = new RelayCommand(SavePosters);
+            UpdateImdbLinkCommand = new RelayCommand(UpdateImdbLink);
         }
 
         private async void Login(object obj)
@@ -382,7 +384,7 @@ namespace parser.ViewModels
                     try
                     {
                         name = urls[i].InnerText;
-                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена") || name.Contains("Театральна версія") || name.Contains("[UNRATED]") || name.Contains("[3D]"))
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Collection"))
                         {
                             continue;
                         }
@@ -390,6 +392,23 @@ namespace parser.ViewModels
                         if(yearMatch.Success)
                         {
                             name = name.Substring(0, yearMatch.Index);
+                            if (Regex.Match(name, @"\[(.*?)\]").Success)
+                            {
+                                name = Regex.Replace(name, @"\[(.*?)\]", String.Empty);
+                            }
+                            else if(Regex.Match(name, @"\((.*?)\)").Success)
+                            {
+                                name = Regex.Replace(name, @"\((.*?)\)", String.Empty);
+                            }
+                            if(name.Contains("&quot;"))
+                            {
+                                name = name.Replace("&quot;", "\"");
+                            }
+                            if(name[name.Length-1]==' ')
+                            {
+                                name = name.Remove(name.Length - 1, 1);
+                            }
+                            name = name.Replace("  ", " ");
                             Movie toAdd = new Movie(name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1,4)));
                             if (Movies.Contains(toAdd))
                             {
@@ -630,6 +649,12 @@ namespace parser.ViewModels
                 }
             }
         }
+
+        public async void UpdateImdbLink(object obj)
+        {
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
