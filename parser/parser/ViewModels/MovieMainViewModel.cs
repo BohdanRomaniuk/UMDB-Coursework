@@ -519,13 +519,25 @@ namespace parser.ViewModels
                     var firstPost = doc.DocumentNode.SelectSingleNode("//span[@class='postbody']");
                     Movies[i].ImdbLink = Movie.ParseImdbLinkFromHtml(firstPost.InnerHtml);
                     Movies[i].Poster = Movie.ParsePosterLinkFromHtml(firstPost.InnerHtml);
-                    string text = Movie.StripHTML(firstPost.InnerHtml);
+                    Match storyMatch = Regex.Match(firstPost.InnerHtml, "<div style=\"text-align: justify;\"><span style=\"font-style: italic\">(.|\n)*?</span></div>");
+                    string text = "";
+                    if (storyMatch.Success)
+                    {
+                        Movies[i].Story = Movie.StripHTML(storyMatch.Value);
+                        Movies[i].Story = Regex.Replace(Movies[i].Story, @"\t|\n|\r", String.Empty);
+                        text = Movie.StripHTML(firstPost.InnerHtml);
+                    }
+                    else
+                    {
+                        text = Movie.StripHTML(firstPost.InnerHtml);
+                        Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
+                        Movies[i].Story = Regex.Replace(Movies[i].Story, @"\t|\n|\r", String.Empty);
+                    }
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
                     Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:", "Телеканал / кіностудія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:", "Режисери:");
                     Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "Оповідач:");
-                    Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
                     Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
                     ++Progress;
                 }
