@@ -47,13 +47,17 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Content="Ім'я користувача"/>
+                            <Label Content="Ім'я корист."/>
                             <TextBox Text="{Binding UserName}" Grid.Column="1" Margin="3"/>
                             <Label Content="Пароль" Grid.Row="1"/>
                             <!--<TextBox Text="{Binding UserPassword}" Grid.Row="1" Grid.Column="1" Margin="3"/>-->
                             <PasswordBox Name="UserPassword" Grid.Row="1" Grid.Column="1" Margin="3"/>
-                            <Label Content="{Binding Status}" Foreground="{Binding StatusColor}" Grid.Row="2"/>
-                            <Button Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=UserPassword}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Content="Увійти"  Width="75" Margin="3"/>
+                            <Label Content="{Binding Status}" Foreground="{Binding StatusColor}" DockPanel.Dock="Left" Grid.Row="2"/>
+                            <DockPanel Grid.Row="2" Grid.Column="1">
+                                <CheckBox Content="офлайн" Grid.Row="2" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                <Button Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=UserPassword}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Content="Увійти"  Width="70" Margin="3"/>
+                            </DockPanel>
+
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Статистика" Grid.Column="1" Margin="3,0,3,3">

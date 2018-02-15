@@ -134,7 +134,6 @@ namespace parser.ViewModels
             }
         }
 
-
         public string SearchText
         {
             get
@@ -220,38 +219,32 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(ErrorsCount));
             }
         }
-
-        private ObservableCollection<Movie> search(string what)
-        {
-            return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-        }
+        
         public ObservableCollection<Movie> Movies
         {
             get
             {
-                //return movies;
-                //switch(SearchType)
-                //{
-                //    case 0:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 1:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Year.ToString(), SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 2:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Genre, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 3:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Countries, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 4:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.ImdbLink, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 5:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Director, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 6:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Actors, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    case 7:
-                //        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Story, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
-                //    default:
-                //        return movies;
-                //}
-                return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                switch (SearchType)
+                {
+                    case 0:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 1:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => s.Year.ToString()==SearchText)) : movies;
+                    case 2:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Genre, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 3:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Countries, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 4:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.ImdbLink, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 5:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Director, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 6:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Actors, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 7:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Story, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    default:
+                        return movies;
+                }
             }
             set
             {
@@ -443,12 +436,12 @@ namespace parser.ViewModels
                     doc = session.Load(Url + "-" + start);
                 });
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
-                for (int i = 0; i <= urls.Count; ++i)
+                for (int i = 0; i < urls.Count; ++i)
                 {
                     try
                     {
                         name = urls[i].InnerText;
-                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Розширена") || name.Contains("Театральна версія") || name.Contains("[UNRATED]") || name.Contains("[3D]"))
+                        if (name.Contains("Дилогія") || name.Contains("Трилогія") || name.Contains("Квадрологія") || name.Contains("Пенталогія") || name.Contains("Антологія") || name.Contains("Колекція") || name.Contains("Повне зібрання") || name.Contains("Dilogy") || name.Contains("Trilogy") || name.Contains("Quadrilogy") || name.Contains("колекція") || name.Contains("Collection"))
                         {
                             continue;
                         }
@@ -456,18 +449,35 @@ namespace parser.ViewModels
                         if (yearMatch.Success)
                         {
                             name = name.Substring(0, yearMatch.Index);
+                            if (Regex.Match(name, @"\[(.*?)\]").Success)
+                            {
+                                name = Regex.Replace(name, @"\[(.*?)\]", String.Empty);
+                            }
+                            else if (Regex.Match(name, @"\((.*?)\)").Success)
+                            {
+                                name = Regex.Replace(name, @"\((.*?)\)", String.Empty);
+                            }
+                            if (name.Contains("&quot;"))
+                            {
+                                name = name.Replace("&quot;", "\"");
+                            }
+                            if (name[name.Length - 1] == ' ')
+                            {
+                                name = name.Remove(name.Length - 1, 1);
+                            }
+                            name = name.Replace("  ", " ");
                             Movie toAdd = new Movie(name, urls[i].GetAttributeValue("href", null), Convert.ToInt32(yearMatch.Value.Substring(1, 4)));
-                            if (Movies.Contains(toAdd))
+                            if (Movies.Contains(toAdd) || toUpdate.Contains(toAdd))
                             {
                                 continue;
                             }
-                            toUpdate.AddFirst(toAdd);
+                            toUpdate.AddFirst(toAdd); ;
                         }
                     }
                     catch (Exception exc)
                     {
                         ++ErrorsCount;
-                        System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count-i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Windows.MessageBox.Show(exc.Message + "\n" + (Movies.Count - i) + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Виникла помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 ++Progress;
@@ -486,7 +496,7 @@ namespace parser.ViewModels
             else
             {
                 System.Windows.MessageBox.Show("Нових фільмів не знайдено", "Важлива інформація", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-            }
+            }  
         }
 
         private void OpenParseWindow(object obj)
@@ -530,14 +540,14 @@ namespace parser.ViewModels
                     else
                     {
                         text = Movie.StripHTML(firstPost.InnerHtml);
-                        Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:");
+                        Movies[i].Story = Movie.ParseElementByNameFromText(text, "Сюжет:", "Сюжет фільму:", "Опис:");
                         Movies[i].Story = Regex.Replace(Movies[i].Story, @"\t|\n|\r", String.Empty);
                     }
                     Movies[i].Genre = Movie.ParseElementByNameFromText(text, "Жанр:");
                     Movies[i].Countries = Movie.ParseElementByNameFromText(text, "Країна:");
                     Movies[i].Companies = Movie.ParseElementByNameFromText(text, "Кінокомпанія:", "Кіностудія:", "Кіностудія / кінокомпанія:", "Кінокомпанія / телеканал:", "Телеканал / кіностудія:");
                     Movies[i].Director = Movie.ParseElementByNameFromText(text, "Режисер:", "Режисери:");
-                    Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "Оповідач:");
+                    Movies[i].Actors = Movie.ParseElementByNameFromText(text, "Актори:", "У ролях:", "Оповідач:");
                     Movies[i].Length = Movie.ParseElementByNameFromText(text, "Тривалість:");
                     ++Progress;
                 }

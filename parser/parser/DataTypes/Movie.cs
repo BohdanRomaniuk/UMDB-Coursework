@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace parser.DataTypes
 {
@@ -279,10 +280,18 @@ namespace parser.DataTypes
 
         public static string ParseElementByNameFromText(string text, string elemName)
         {
-            int startPos = text.IndexOf(elemName);
-            int endPos = (startPos!=-1)?text.IndexOf('\n', startPos)-1:-1;
-            string parsed = (startPos != -1 && endPos != -1) ? text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length) : "Немає";
-            return (parsed[0] == ' ') ?parsed.Substring(1): parsed;
+            string parsed = "";
+            try
+            {
+                int startPos = text.IndexOf(elemName);
+                int endPos = (startPos != -1) ? text.IndexOf('\n', startPos) - 1 : -1;
+                parsed = (startPos != -1 && endPos != -1) ? text.Substring(startPos + elemName.Length, endPos - startPos - elemName.Length) : "Немає";
+            }
+            catch(Exception exc)
+            {
+                MessageBox.Show(String.Format("Елемент: {0}\n{1}",elemName, text), "Помилка парсингу");
+            }
+            return (parsed[0] == ' ') ? parsed.Substring(1) : parsed;
         }
 
         public static string ParseElementByNameFromText(string text, params string[] elemNames)
