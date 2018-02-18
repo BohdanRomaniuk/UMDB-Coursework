@@ -41,6 +41,8 @@ namespace parser.ViewModels
             }
         }
         private string userName;
+        private string postersLocation;
+        private bool offlineMode;
         private string status = "[Офлайн]";
         private Brush statusColor = Brushes.Red;
         #endregion logining
@@ -70,6 +72,29 @@ namespace parser.ViewModels
             {
                 userName = value;
                 OnPropertyChanged(nameof(UserName));
+            }
+        }
+        public bool OfflineMode
+        {
+            get
+            {
+                return offlineMode;
+            }
+            set
+            {
+                offlineMode = value;
+                OnPropertyChanged(nameof(OfflineMode));
+                if (value)
+                {
+                    using (var fbd = new FolderBrowserDialog())
+                    {
+                        DialogResult result = fbd.ShowDialog();
+                        if (result == DialogResult.OK && !String.IsNullOrEmpty(fbd.SelectedPath))
+                        {
+                            postersLocation = fbd.SelectedPath;
+                        }
+                    }
+                }
             }
         }
         public string Status
@@ -577,7 +602,7 @@ namespace parser.ViewModels
         {
             if (obj != null)
             {
-                MovieWindow tw = new MovieWindow(obj as Movie);
+                MovieWindow tw = new MovieWindow(obj as Movie, OfflineMode, postersLocation);
                 tw.Show();
                 tw.Owner = ((MainWindow)System.Windows.Application.Current.MainWindow);
             }
@@ -658,7 +683,7 @@ namespace parser.ViewModels
                             {
                                 ++ErrorsCount;
                                 Movies[i].PosterFileName = "no_poster.jpg";
-                                System.Windows.MessageBox.Show(wexc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Помилка завантаження", MessageBoxButton.OK, MessageBoxImage.Error);
+                                //System.Windows.MessageBox.Show(wexc.Message + "\n" + Movies[i].Name + "\n" + Movies[i].Link, "Помилка завантаження", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                             catch (Exception exc)
                             {

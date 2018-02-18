@@ -43,14 +43,21 @@ namespace parser.ViewModels
         public ICommand CopyPosterUrlCommand { get; private set; }
         public ICommand SavePosterAsCommand { get; private set; }
 
-        public MovieWindowViewModel(Movie _currentMovie)
+        public MovieWindowViewModel(Movie _currentMovie, bool _offlineMode, string _postersLocation)
         {
             try
             {
                 CurrentMovie = _currentMovie;
                 if (_currentMovie.Poster != "немає")
                 {
-                    PosterImage = new BitmapImage(new Uri(_currentMovie.Poster));
+                    if(_offlineMode)
+                    {
+                        PosterImage = new BitmapImage(new Uri(_postersLocation + "\\" + _currentMovie.PosterFileName));
+                    }
+                    else
+                    {
+                        PosterImage = new BitmapImage(new Uri(_currentMovie.Poster));
+                    }
                 }
             }
             catch(Exception exc)
