@@ -267,6 +267,8 @@ namespace parser.ViewModels
                         return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Actors, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
                     case 7:
                         return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Story, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                    case 8:
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s=> (new CultureInfo("UA")).CompareInfo.IndexOf(s.PosterFileName, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
                     default:
                         return movies;
                 }
@@ -334,6 +336,7 @@ namespace parser.ViewModels
         public ICommand OpenSavePostersWindowCommand { get; private set; }
         public ICommand SavePostersCommand { get; private set; }
         public ICommand UpdateImdbLinkCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
         #endregion
 
         public MovieMainViewModel()
@@ -355,6 +358,7 @@ namespace parser.ViewModels
             OpenSavePostersWindowCommand = new RelayCommand(OpenSavePostersWindow);
             SavePostersCommand = new RelayCommand(SavePosters);
             UpdateImdbLinkCommand = new RelayCommand(UpdateImdbLink);
+            DeleteCommand = new RelayCommand(Delete);
         }
 
         private async void Login(object obj)
@@ -700,6 +704,15 @@ namespace parser.ViewModels
         public async void UpdateImdbLink(object obj)
         {
 
+        }
+
+        public void Delete(object obj)
+        {
+            Movie toDelete = obj as Movie;
+            if(System.Windows.MessageBox.Show(String.Format("Ви впевнені, що хочете видалити фільм {0}?",toDelete.Name),"Видалення фільму", MessageBoxButton.YesNo,MessageBoxImage.Question)== MessageBoxResult.Yes)
+            {
+                Movies.Remove(toDelete);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

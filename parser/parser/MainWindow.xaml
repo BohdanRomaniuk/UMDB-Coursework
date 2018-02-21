@@ -138,8 +138,8 @@
                                     <ComboBoxItem Content="imdb"/>
                                     <ComboBoxItem Content="режисером"/>
                                     <ComboBoxItem Content="акторами"/>
-                                    <ComboBoxItem Content="студією"/>
                                     <ComboBoxItem Content="сюжетом"/>
+                                    <ComboBoxItem Content="назвою файлу"/>
                                 </ComboBox>
                             </DockPanel>
                             <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="3"/>
@@ -150,6 +150,7 @@
                             <Button Content="Зберегти в bin" Command="{Binding SaveToBinaryCommand}" Margin="3" Grid.Row="2"/>
                             <Button Content="Зберегти в БД" IsEnabled="False" Command="{Binding SaveToDbCommand}" Margin="3" Grid.Row="2" Grid.Column="2"/>
                             <Button Content="Оновити IMDB" Command="{Binding UpdateImdbLinkCommand}" Margin="3" Grid.Row="1" Grid.Column="3"/>
+                            <Button Content="Видалити" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=tops}" Margin="3" Grid.Row="2" Grid.Column="3" Foreground="Red"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
