@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace database.Models
 {
     public class Movie
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -31,7 +29,7 @@ namespace database.Models
         public string Story { get; set; }
 
         //SpecRegion
-        public List<Genre> Genres { get; set; }
-        public List<Country> Countries { get; set; }
+        public List<MovieGenre> Genres { get; set; }
+        public List<MovieCountry> Countries { get; set; }
     }
 }

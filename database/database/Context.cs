@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
 using database.Models;
@@ -13,7 +12,7 @@ namespace database
         public DbSet<Country> Countries { get; set; }
         public DbSet<MovieGenre> MovieGenres { get; set; }
         public DbSet<MovieCountry> MovieCountries { get; set; }
-        public MoviesContext():
+        public MoviesContext() :
             base("UMDB-1")
         {
         }
@@ -25,8 +24,24 @@ namespace database
         {
             using (var db = new MoviesContext())
             {
-                db.SaveChanges();
-                Console.WriteLine("Database succesfully created!!!");
+                var result = from movie in db.Movies.Include("Genres").Include("Genres.Genre").Include("Countries").Include("Countries.Country")
+                             select movie;
+                foreach (Movie elem in result)
+                {
+                    Console.WriteLine("{0} ({1})", elem.Name, elem.Year);
+                    Console.Write("Жанри: ");
+                    foreach (var genre in elem.Genres)
+                    {
+                        Console.Write("{0} ", genre.Genre.Name);
+                    }
+                    Console.Write("\n");
+                    Console.Write("Країна: ");
+                    foreach (var genre in elem.Countries)
+                    {
+                        Console.Write("{0} ", genre.Country.Name);
+                    }
+                    Console.Write("\n");
+                }
                 Console.ReadKey();
             }
         }

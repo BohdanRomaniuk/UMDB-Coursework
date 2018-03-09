@@ -7,13 +7,13 @@ namespace database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class IntermediateTables : IMigrationMetadata
+    public sealed partial class FKRequired : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(IntermediateTables));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FKRequired));
         
         string IMigrationMetadata.Id
         {
-            get { return "201803091701369_IntermediateTables"; }
+            get { return "201803091952101_FKRequired"; }
         }
         
         string IMigrationMetadata.Source
