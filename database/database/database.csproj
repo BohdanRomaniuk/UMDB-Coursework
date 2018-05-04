@@ -64,6 +64,7 @@
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Models\MovieCountry.cs" />
     <Compile Include="Models\MovieGenre.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
