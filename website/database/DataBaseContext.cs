@@ -2,10 +2,11 @@
 using database.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace database
 {
-    public class MoviesContext : DbContext
+    public class MoviesContext : IdentityDbContext<User>
     {
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
