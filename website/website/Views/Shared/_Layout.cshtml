@@ -31,8 +31,16 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" style="float:unset;">
                     <li><a asp-area="" asp-controller="Search" asp-action="Query">Головна</a></li>
-                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
-                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Logout" style="float:right;">Вихід</a></li>
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="ViewProfile" asp-route-name="@User?.Identity?.Name" style="float:right;">@User?.Identity?.Name</a></li>
+                    }
+                    else
+                    {
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
+                    }
                 </ul>
             </div>
         </div>
@@ -41,7 +49,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - website</p>
+            <p>&copy; 2018 - Українська база даних фільмів</p>
         </footer>
     </div>
 

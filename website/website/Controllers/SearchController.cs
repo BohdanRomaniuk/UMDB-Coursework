@@ -24,7 +24,8 @@ namespace website.Controllers
         {
             IQueryable<Movie> allMovies = from movie in db.Movies.Include(m=>m.Countries).ThenInclude(c=>c.Country).Include(m=>m.Genres).ThenInclude(g=>g.Genre)
                          select movie;
-            return View(allMovies);
+            int perPage = 20;
+            return View(allMovies.Skip(page*perPage-perPage).Take(perPage));
         }
     }
 }
