@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -23,6 +24,8 @@ namespace parser.DataTypes
         private string story;
         private string poster;
         private string posterFileName;
+        private List<Genre> movieGenres;
+        private List<Country> movieCountries;
 
         public string Name
         {
@@ -184,8 +187,36 @@ namespace parser.DataTypes
                 OnPropertyChanged(nameof(PosterFileName));
             }
         }
+        public List<Genre> MovieGenres
+        {
+            get
+            {
+                return movieGenres;
+            }
+            set
+            {
+                movieGenres = value;
+                OnPropertyChanged(nameof(MovieGenres));
+            }
+        }
+        public List<Country> MovieCountries
+        {
+            get
+            {
+                return movieCountries;
+            }
+            set
+            {
+                movieCountries = value;
+                OnPropertyChanged(nameof(MovieCountries));
+            }
+        }
 
-        public Movie() { }
+        public Movie()
+        {
+            MovieGenres = new List<Genre>();
+            MovieCountries = new List<Country>();
+        }
         public Movie(string _name, string _link="http://", int _year=0, string _genre="немає", string _countries="відсутні", string _length="00:00:00", string _imdb="http://", string _companies = "відсутні", string _director="немає", string _actors="немає", string _story="немає", string _poster="немає", string _posterFileName="немає")
         {
             Name = _name;
@@ -201,6 +232,8 @@ namespace parser.DataTypes
             Story = _story;
             Poster = _poster;
             PosterFileName = _posterFileName;
+            MovieGenres = new List<Genre>();
+            MovieCountries = new List<Country>();
         }
 
         public override string ToString()
