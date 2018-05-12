@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace parser.ViewModels
 {
     public class MovieMainViewModel : INotifyPropertyChanged
     {
+        string connectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;initial catalog=UMDB;integrated security=True;MultipleActiveResultSets=True;";
         //Logining
         #region logining
         BrowserSession session;
@@ -252,7 +254,7 @@ namespace parser.ViewModels
                 switch (SearchType)
                 {
                     case 0:
-                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Length, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
                     case 1:
                         return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => s.Year.ToString()==SearchText)) : movies;
                     case 2:
@@ -280,6 +282,8 @@ namespace parser.ViewModels
                 OnPropertyChanged(nameof(MoviesCount));
             }
         }
+        public ObservableCollection<Genre> Genres { get; set; }
+        public ObservableCollection<Country> Countries { get; set; }
         #endregion parsing
 
         //ProgressBar
@@ -337,6 +341,11 @@ namespace parser.ViewModels
         public ICommand SavePostersCommand { get; private set; }
         public ICommand UpdateImdbLinkCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
+        public ICommand GenerateGenresCommand { get; private set; }
+        public ICommand SaveGenresToDBCommand { get; private set; }
+        public ICommand GenereteCountriesCommand { get; private set; }
+        public ICommand SaveCountriesToDBCommand { get; private set; }
+        public ICommand SaveMoviesToDBCommand { get; private set; }
         #endregion
 
         public MovieMainViewModel()
@@ -344,6 +353,8 @@ namespace parser.ViewModels
             Session = new BrowserSession();
             UserName = "bohdan2307";
             Movies = new ObservableCollection<Movie>();
+            Genres = new ObservableCollection<Genre>();
+            Countries = new ObservableCollection<Country>();
 
             LoginCommand = new RelayCommand(Login);
             ClearCommand = new RelayCommand(Clear);
@@ -359,6 +370,11 @@ namespace parser.ViewModels
             SavePostersCommand = new RelayCommand(SavePosters);
             UpdateImdbLinkCommand = new RelayCommand(UpdateImdbLink);
             DeleteCommand = new RelayCommand(Delete);
+            GenerateGenresCommand = new RelayCommand(GenerateGenres);
+            SaveGenresToDBCommand = new RelayCommand(SaveGenresToDB);
+            GenereteCountriesCommand = new RelayCommand(GenereteCountries);
+            SaveCountriesToDBCommand = new RelayCommand(SaveCountriesToDB);
+            SaveMoviesToDBCommand = new RelayCommand(SaveMoviesToDB);
         }
 
         private async void Login(object obj)
@@ -703,7 +719,10 @@ namespace parser.ViewModels
 
         public async void UpdateImdbLink(object obj)
         {
-
+            foreach(var elem in Movies)
+            {
+                elem.Length = Regex.Match(elem.Length, @"([0-9]{2}|[0-9]):[0-9]{2}:[0-9]{2}").Value;
+            }
         }
 
         public void Delete(object obj)
@@ -713,6 +732,129 @@ namespace parser.ViewModels
             {
                 Movies.Remove(toDelete);
             }
+        }
+
+        public void GenerateGenres(object obj)
+        {
+            int index = 0;
+            foreach (Movie movie in Movies)
+            {
+                string genreString = movie.Genre.Replace('.', ',');
+                genreString = Regex.Replace(genreString, @"[А-Я]", с => с.ToString().ToLower());
+                string[] genres = genreString.Split(',');
+                movie.MovieGenres = new List<Genre>();
+                foreach (string genre in genres)
+                {
+                    string temp = genre;
+                    temp = Regex.Replace(temp, @"^\s+", "");
+                    temp = Regex.Replace(temp, @"\s+$", "");
+                    if (!Genres.Contains(new Genre() { Name = temp }) && temp != "")
+                    {
+                        Genres.Add(new Genre(++index, temp));
+                    }
+                    movie.MovieGenres.Add(Genres.Where(s => s.Name == temp).FirstOrDefault());
+                }
+            }
+            System.Windows.MessageBox.Show("Жанри згенеровано!", "Статус генерації", MessageBoxButton.OK);
+            //Debuging
+            using (StreamWriter writer = new StreamWriter("../../Genres.txt"))
+            {
+                foreach (var elem in Genres)
+                {
+                    writer.WriteLine("{0,-10}{1}", elem.Id, elem.Name);
+                }
+            }
+        }
+
+        public void SaveGenresToDB(object obj)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = connection.CreateCommand();
+            foreach(Genre genre in Genres)
+            {
+                command.CommandText = String.Format("INSERT INTO Genres(Name) VALUES(N'{0}');", genre.Name.Replace("'","''"));
+                command.ExecuteNonQuery();
+            }
+            System.Windows.MessageBox.Show("Усі жанри було успішно збережено в БД!", "Збереження в бд", MessageBoxButton.OK);
+        }
+
+        public void GenereteCountries(object obj)
+        {
+            int index = 0;
+            foreach (Movie movie in Movies)
+            {
+                string countriesString = movie.Countries.Replace('.', ',');
+                string[] countries = countriesString.Split(',');
+                movie.MovieCountries = new List<Country>();
+                foreach (string country in countries)
+                {
+                    string temp = country;
+                    temp = Regex.Replace(temp, @"^\s+", "");
+                    temp = Regex.Replace(temp, @"\s+$", "");
+                    if (!Countries.Contains(new Country() { Name = temp }) && temp != "")
+                    {
+                        Countries.Add(new Country(++index, temp));
+                    }
+                    movie.MovieCountries.Add(Countries.Where(s => s.Name == temp).FirstOrDefault());
+                }
+            }
+            System.Windows.MessageBox.Show("Країни згенеровано!", "Статус генерації", MessageBoxButton.OK);
+            //Debuging
+            using (StreamWriter writer = new StreamWriter("../../Countries.txt"))
+            {
+                foreach (var elem in Countries)
+                {
+                    writer.WriteLine("{0,-10}{1}", elem.Id, elem.Name);
+                }
+            }
+        }
+
+        public void SaveCountriesToDB(object obj)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = connection.CreateCommand();
+            foreach (Country country in Countries)
+            {
+                command.CommandText = String.Format("INSERT INTO Countries(Name) VALUES(N'{0}');", country.Name.Replace("'", "''"));
+                command.ExecuteNonQuery();
+            }
+            System.Windows.MessageBox.Show("Усі країни було успішно збережено в БД!", "Збереження в бд", MessageBoxButton.OK);
+        }
+
+        public void SaveMoviesToDB(object obj)
+        {
+            Progress = 0;
+            Maximum = Movies.Count;
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = connection.CreateCommand();
+            int movieId = 1;
+            foreach (Movie movie in Movies)
+            {
+                command.CommandText = String.Format("INSERT INTO Movies(Name, Year, Length, ImdbLink, Companies, Director, Actors, Story, Poster) VALUES(N'{0}',{1},N'{2}',N'{3}',N'{4}',N'{5}',N'{6}',N'{7}',N'{8}');", movie.Name.Replace("'", "''"), movie.Year, movie.Length, movie.ImdbLink, movie.Companies.Replace("'", "''"), movie.Director.Replace("'", "''"), movie.Actors.Replace("'", "''"), movie.Story.Replace("'", "''"), movie.PosterFileName.Replace("'", "''"));
+                command.ExecuteNonQuery();
+                foreach(Genre genre in movie.MovieGenres)
+                {
+                    if(genre!=null)
+                    {
+                        command.CommandText = String.Format("INSERT INTO MovieGenres(GenreId, MovieId) VALUES ({0},{1});", genre.Id, movieId);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                foreach(Country country in movie.MovieCountries)
+                {
+                    if(country!=null)
+                    {
+                        command.CommandText = String.Format("INSERT INTO MovieCountries(CountryId, MovieId) VALUES({0},{1});", country.Id, movieId);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                ++movieId;
+                ++Progress;
+            }
+            System.Windows.MessageBox.Show("Усі ФІЛЬМИ було успішно збережено в БД!", "Збереження в бд", MessageBoxButton.OK);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

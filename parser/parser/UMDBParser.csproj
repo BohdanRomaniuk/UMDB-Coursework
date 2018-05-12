@@ -64,6 +64,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTypes\Country.cs" />
+    <Compile Include="DataTypes\Genre.cs" />
     <Compile Include="DataTypes\Movie.cs" />
     <Compile Include="DataTypes\RelayCommand.cs" />
     <Compile Include="MovieWindow.xaml.cs">
