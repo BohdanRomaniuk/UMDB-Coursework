@@ -45,11 +45,11 @@
         <fieldset class="form-group">
             <label for="order_by">Сортувати за</label>
             <select class="form-control" id="order_by" asp-for="OrderBy">
-                <option value="year-asc">
-                    Рік випуску (старші спочатку)
-                </option>
                 <option value="year-desc">
                     Рік випуску (новіші спочатку)
+                </option>
+                <option value="year-asc">
+                    Рік випуску (старші спочатку)
                 </option>
             </select>
         </fieldset>
@@ -90,7 +90,7 @@
                                 <td>
                                     @foreach (MovieGenre genre in movie.Genres)
                                     {
-                                        <a class="label label-primary" href="">@genre.Genre.Name</a>
+                                        <a class="label label-primary" href="/?genres=@genre.Genre.Id">@genre.Genre.Name</a>
                                     }
                                 </td>
                             </tr>
@@ -99,7 +99,7 @@
                                 <td>
                                     @foreach (MovieCountry country in movie.Countries)
                                     {
-                                        <a class="label label-primary" href="">@country.Country.Name</a>
+                                        <a class="label label-primary" href="/?country=@country.Country.Id">@country.Country.Name</a>
                                     }
                                 </td>
                             </tr>
@@ -125,10 +125,10 @@
                                     <a target="_blank" rel="nofollow" href="http://www.imdb.com/title/tt5886440/" class="postlink"><img src="//hurtom.com/imdb/tt5886440.png" border="0" alt=""></a>
                                 </td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td>Сюжет:</td>
                                 <td>@movie.Story</td>
-                            </tr>
+                            </tr>-->
                         </tbody>
                     </table>
                     <br>

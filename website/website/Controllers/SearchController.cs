@@ -38,11 +38,11 @@ namespace website.Controllers
             }
             if(orderBy == "year-desc")
             {
-                allMovies = allMovies.OrderBy(m => m.Year);
+                allMovies = allMovies.OrderByDescending(m => m.Year);
             }
             else if(orderBy == "year-asc")
             {
-                allMovies = allMovies.OrderByDescending(m => m.Year);
+                allMovies = allMovies.OrderBy(m => m.Year);
             }
             if(yearFrom>1920)
             {
