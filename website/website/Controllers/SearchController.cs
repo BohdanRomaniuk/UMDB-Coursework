@@ -52,7 +52,21 @@ namespace website.Controllers
             {
                 allMovies = allMovies.Where(m => m.Year <= yearTo);
             }
-            return View(new SearchViewModel(db.Genres, db.Countries, allMovies.Skip(page*perPage-perPage).Take(perPage), genres,  country, orderBy, yearFrom, yearTo, movieName));
+            return View(new SearchViewModel(db.Genres, 
+                                            db.Countries,
+                                            allMovies.Skip(page*perPage-perPage).Take(perPage),
+                                            genres,
+                                            country,
+                                            orderBy,
+                                            yearFrom,
+                                            yearTo,
+                                            movieName,
+                                            new PagingInfo
+                                            {
+                                                CurrentPage = page,
+                                                ItemsPerPage = perPage,
+                                                TotalItems = allMovies.Count()
+                                            }));
         }
     }
 }

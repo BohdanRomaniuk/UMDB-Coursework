@@ -17,8 +17,9 @@ namespace website.Models
         public int YearFrom { get; set; }
         public int YearTo { get; set; }
         public string MovieName { get; set; }
+        public PagingInfo Pagination { get; set; }
 
-        public SearchViewModel(IQueryable<Genre> _genres, IQueryable<Country> _countries, IQueryable<Movie> _movies, int[] _selectedGenres, int _country, string _orderBy, int _yearFrom, int _yearTo,  string _movieName)
+        public SearchViewModel(IQueryable<Genre> _genres, IQueryable<Country> _countries, IQueryable<Movie> _movies, int[] _selectedGenres, int _country, string _orderBy, int _yearFrom, int _yearTo,  string _movieName, PagingInfo _pagination)
         {
             Genres = _genres;
             Countries = _countries;
@@ -29,6 +30,7 @@ namespace website.Models
             YearFrom = _yearFrom;
             YearTo = _yearTo;
             MovieName = _movieName;
+            Pagination = _pagination;
         }
     }
 }
