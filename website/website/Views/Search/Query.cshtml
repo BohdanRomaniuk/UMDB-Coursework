@@ -10,12 +10,12 @@
         <fieldset class="form-group">
             <label for="country">Жанри</label>
             <div class="tab-content">
-                <div class="tab-pane genres active show" id="include_genres" role="tabpanel" style="max-height: 15em;overflow-y: scroll;">
+                <div class="tab-pane genres active show" id="include_genres" role="tabpanel" style="max-height: 20em;overflow-y: scroll;">
                     @foreach (Genre genre in Model.Genres)
                     {
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="genres[]" value="@genre.Id">@genre.Name
+                            <input type="checkbox" name="genres" value="@genre.Id">@genre.Name
                         </label>
                     </div>
                     }
@@ -36,12 +36,12 @@
         </fieldset>
         <fieldset class="form-group">
             <label for="order_by">Сортувати за</label>
-            <select class="form-control" name="order_by" id="order_by">
-                <option value="year_desc">
-                    Рік випуску (новіші спочатку)
-                </option>
+            <select class="form-control" name="orderBy" id="order_by" asp-for="OrderBy">
                 <option value="year_asc">
                     Рік випуску (старші спочатку)
+                </option>
+                <option value="year_desc">
+                    Рік випуску (новіші спочатку)
                 </option>
             </select>
         </fieldset>
