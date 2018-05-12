@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Пошук";
 }
-
 <div class="col-xs-12 col-md-12 col-lg-3" id="sidebar" style="margin-top: 20px;">
     <form method="get" action="/" id="myform">
         <fieldset class="form-group">
@@ -15,7 +14,15 @@
                     {
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="genres" value="@genre.Id">@genre.Name
+                            @if (Model.SelectedGenres.Contains(genre.Id))
+                            {
+                                <input type="checkbox" name="genres" value="@genre.Id" checked>@genre.Name
+                            }
+                            else
+                            {
+
+                                <input type="checkbox" name="genres" value="@genre.Id">@genre.Name
+                            }
                         </label>
                     </div>
                     }
@@ -24,7 +31,7 @@
         </fieldset>
         <fieldset class="form-group">
             <label for="country">Країна</label>
-            <select class="form-control" id="type" name="country" asp-for="Country">
+            <select class="form-control" id="type"  asp-for="Country">
                 <option value="">Будь-яка країна</option>
                 @foreach(Country country in Model.Countries)
                 {
@@ -36,31 +43,30 @@
         </fieldset>
         <fieldset class="form-group">
             <label for="order_by">Сортувати за</label>
-            <select class="form-control" name="orderBy" id="order_by" asp-for="OrderBy">
-                <option value="year_asc">
+            <select class="form-control"  id="order_by" asp-for="OrderBy">
+                <option value="year-asc">
                     Рік випуску (старші спочатку)
                 </option>
-                <option value="year_desc">
+                <option value="year-desc">
                     Рік випуску (новіші спочатку)
                 </option>
             </select>
         </fieldset>
         <fieldset class="form-group">
             <label for="ys">Рік випуску (мін)</label>
-            <input type="number" class="form-control" id="ys" name="ys" placeholder="1900" min="1850" max="2050" value="">
+            <input type="number" class="form-control" id="ys"   asp-for="YearFrom" placeholder="1920" min="1920" max="2018">
         </fieldset>
         <fieldset class="form-group">
             <label for="ye">Рік випуску (макс)</label>
-            <input type="number" class="form-control" id="ye" name="ye" placeholder="2016" min="1850" max="2050" value="">
+            <input type="number" class="form-control" id="ye"  asp-for="YearTo" placeholder="2018" min="1920" max="2018">
         </fieldset>
-        <button type="submit" class="btn btn-block btn-primary">Фільтрувати</button>
     </form>
 </div>
 <div class="col-xs-12 col-sm-9" style="margin-top: 20px;">
     <div class="input-group">
-        <input type="text" form="myform" class="form-control" placeholder="Шукати..." name="movieName" asp-for="MovieName">
+        <input type="text" form="myform" class="form-control" placeholder="Шукати..."  asp-for="MovieName">
         <span class="input-group-btn">
-            <button type="submit" form="myform" class="btn btn-primary" type="button">Пошук</button>
+            <button type="submit" form="myform" class="btn btn-primary">Пошук</button>
         </span>
     </div>
     @foreach (Movie movie in Model.Movies)

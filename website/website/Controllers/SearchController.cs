@@ -18,22 +18,17 @@ namespace website.Controllers
             db = _db;
         }
 
-        public IActionResult Query(int country=0, string movieName="", int[] genres=null, int page = 1)
+        public IActionResult Query(int country=0, int[] genres = null, string orderBy="year-desc", int yearFrom=1920, int yearTo=2018, string movieName="", int page = 1)
         {
-            /*IQueryable<Movie> allMovies = db.Movies
-                                          .Include(m => m.Countries).ThenInclude(c => c.Country)
-                                          .Include(m => m.Genres).ThenInclude(g => g.Genre)
-                                          .Where(m => m.Countries.Any(p => p.Country.Id == country))
-                                          .Where(m => m.Name.Contains(movieName))
-                                          .Where(m => m.Genres.Where(g=>genres.Contains(g.Genre.Id)).Count()!=0);*/
             IQueryable<Movie> allMovies = db.Movies
                                           .Include(m => m.Countries).ThenInclude(c => c.Country)
                                           .Include(m => m.Genres).ThenInclude(g => g.Genre);
-            if(country!=0)
+            int perPage = 20;
+            if (country!=0)
             {
                 allMovies = allMovies.Where(m => m.Countries.Any(p => p.Country.Id == country));
             }
-            if(movieName!="")
+            if(movieName!=null && movieName!="")
             {
                 allMovies = allMovies.Where(m => m.Name.Contains(movieName));
             }
@@ -41,8 +36,23 @@ namespace website.Controllers
             {
                 allMovies = allMovies.Where(m => m.Genres.Where(g => genres.Contains(g.Genre.Id)).Count() != 0);
             }
-            int perPage = 20;
-            return View(new SearchViewModel(db.Genres, db.Countries, allMovies.Skip(page*perPage-perPage).Take(perPage), country, movieName));
+            if(orderBy == "year-desc")
+            {
+                allMovies = allMovies.OrderBy(m => m.Year);
+            }
+            else if(orderBy == "year-asc")
+            {
+                allMovies = allMovies.OrderByDescending(m => m.Year);
+            }
+            if(yearFrom>1920)
+            {
+                allMovies = allMovies.Where(m => m.Year >= yearFrom);
+            }
+            if(yearTo<2018)
+            {
+                allMovies = allMovies.Where(m => m.Year <= yearTo);
+            }
+            return View(new SearchViewModel(db.Genres, db.Countries, allMovies.Skip(page*perPage-perPage).Take(perPage), genres,  country, orderBy, yearFrom, yearTo, movieName));
         }
     }
 }
