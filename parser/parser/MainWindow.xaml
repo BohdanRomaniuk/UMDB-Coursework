@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:parser"
         mc:Ignorable="d"
-        Title="UMDBParser" Name="MainWindowName" Height="600" Width="1000" Icon="bot.ico">
+        Title="UMDBParser" Name="MainWindowName" Height="600" Width="1250" Icon="bot.ico">
     <DockPanel>
         <Menu DockPanel.Dock="Top" BorderBrush="Black">
             <MenuItem Header="Файл" Command="">

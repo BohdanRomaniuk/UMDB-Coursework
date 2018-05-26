@@ -3,10 +3,10 @@ using System.Text;
 
 namespace parser.WebLogginer
 {
-    // Represents a combined list and collection of Form Elements.
+    // Являє собою колекцію пари ключ значення з форми запиту
     public class FormElementCollection : Dictionary<string, string>
     {
-        // Constructor. Parses the HtmlDocument to get all form input elements. 
+        // Парсить HtmlDocument аби отримати всі input поля. 
         public FormElementCollection(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var inputs = htmlDoc.DocumentNode.Descendants("input");

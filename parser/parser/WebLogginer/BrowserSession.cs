@@ -5,19 +5,19 @@ using System.Text;
 
 namespace parser.WebLogginer
 {
-    public class BrowserSession
+    public class Session
     {
         private bool _isPost;
         private bool _isDownload;
-        private HtmlAgilityPack.HtmlDocument _htmlDoc;
+        private HtmlDocument _htmlDoc;
         private string _download;
-        public CookieContainer cookiePot;   //<- This is the new CookieContainer
-                                            // System.Net.CookieCollection. Provides a collection container for instances of Cookie class 
+        public CookieContainer cookiePot;
+
         public CookieCollection Cookies { get; set; }
-        // Provide a key-value-pair collection of form elements 
+        //Контейнер для пари ключ значення з форми запиту
         public FormElementCollection FormElements { get; set; }
 
-        // Makes a HTTP GET request to the given URL using COOKIES AFTER LOGIN
+        // Робить GET запит використовуючи COOKIES після логінування
         public string Get(string url)
         {
             _isPost = false;
@@ -32,7 +32,7 @@ namespace parser.WebLogginer
             return _htmlDoc;
         }
 
-        // Makes a HTTP POST request to the given URL
+        // Робить POST запит за заданою адресою
         public string Post(string url)
         {
             _isPost = true;
@@ -48,7 +48,7 @@ namespace parser.WebLogginer
             return _download;
         }
 
-        /// Creates the HtmlWeb object and initializes all event handlers. 
+        /// Створює обєкт HtmlWeb та ініціалізує обробники подій 
         private HtmlWeb CreateWebRequestObject()
         {
             HtmlWeb web = new HtmlWeb();
@@ -59,15 +59,15 @@ namespace parser.WebLogginer
             return web;
         }
 
-        // Event handler for HtmlWeb.PreRequestHandler. Occurs before an HTTP request is executed.
+        // Обробник події HtmlWeb.PreRequestHandler. Виникає перед виконанням HTTP запиту.
         protected bool OnPreRequest(HttpWebRequest request)
         {
-            AddCookiesTo(request);               // Add cookies that were saved from previous requests
-            if (_isPost) AddPostDataTo(request); // We only need to add post data on a POST request
+            AddCookiesTo(request);               // Додати кукі що були збережені з попередніх запитів
+            if (_isPost) AddPostDataTo(request); // Якщо це пост запит то додати пари ключ значення з форми
             return true;
         }
 
-        // Event handler for HtmlWeb.PostResponseHandler. Occurs after a HTTP response is received
+        // Обробник події HtmlWeb.PostResponseHandler. Виникає після повернення HTTP відповіді.
         protected void OnAfterResponse(HttpWebRequest request, HttpWebResponse response)
         {
             SaveCookiesFrom(request, response); // Save cookies for subsequent requests
@@ -80,13 +80,13 @@ namespace parser.WebLogginer
             }
         }
 
-        // Event handler for HtmlWeb.PreHandleDocumentHandler. Occurs before a HTML document is handled
+        // Обробник події HtmlWeb.PreHandleDocumentHandler. Виникає перед тим як HTML документ обробляється
         protected void OnPreHandleDocument(HtmlAgilityPack.HtmlDocument document)
         {
             SaveHtmlDocument(document);
         }
 
-        // Assembles the Post data and attaches to the request object
+        // Збирає дані для Post запиту і прикріпляє до обєкта запиту
         private void AddPostDataTo(HttpWebRequest request)
         {
             string payload = FormElements.AssemblePostPayload();
@@ -97,7 +97,7 @@ namespace parser.WebLogginer
             reqStream.Write(buff, 0, buff.Length);
         }
 
-        // Add cookies to the request object
+        // Додає кукі до обєкту запиту
         private void AddCookiesTo(HttpWebRequest request)
         {
             if (Cookies != null && Cookies.Count > 0)
@@ -106,10 +106,10 @@ namespace parser.WebLogginer
             }
         }
 
-        // Saves cookies from the response object to the local CookieCollection object
+        // Зберігає кукі з запиту до локальної колекції CookieCollection
         private void SaveCookiesFrom(HttpWebRequest request, HttpWebResponse response)
         {
-            //save the cookies 😉
+            //Зберігання кукі!!!
             if (request.CookieContainer.Count > 0 || response.Cookies.Count > 0)
             {
                 if (Cookies == null)
@@ -122,14 +122,14 @@ namespace parser.WebLogginer
             }
         }
 
-        // Saves the form elements collection by parsing the HTML document
+        // Зберігає пари ключ значення для форми запиту
         private void SaveHtmlDocument(HtmlAgilityPack.HtmlDocument document)
         {
             _htmlDoc = document;
             FormElements = new FormElementCollection(_htmlDoc);
         }
 
-        // Makes a HTTP GET request to the given URL  WITHOUT using COOKIES AFTER LOGIN
+        // Робить GET запит без використання COOKIES після логінування
         public string Get2(string url)
         {
             HtmlWeb web = new HtmlWeb();
@@ -145,10 +145,11 @@ namespace parser.WebLogginer
             request.CookieContainer = cookiePot;
             return true;
         }
+
         protected void OnAfterResponse2(HttpWebRequest request, HttpWebResponse response)
         {
-            //do nothing
         }
+
         private void SaveCookiesFrom(HttpWebResponse response)
         {
             if ((response.Cookies.Count > 0))

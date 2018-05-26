@@ -250,35 +250,19 @@ namespace parser.DataTypes
 
         public static string ParsePosterLinkFromHtml(string html)
         {
-            string url = "";
-
+            string url = String.Empty;
             int ind1 = html.IndexOf("posters.hurtom.com");
             int ind2 = (ind1 != -1) ? html.IndexOf('"', ind1) : -1;
 
-            //int ind3 = html.IndexOf("toloka.to/photos/");
-            //int ind4 = (ind3 != -1) ? html.IndexOf('"', ind3) : -1;
-
-            //int ind5 = html.IndexOf("img.hurtom.com/");
-            //int ind6 = (ind5 != -1) ? html.IndexOf('"', ind5) : -1;
-
-            int ind7 = html.IndexOf("img src=\"");
-            int ind8 = (ind7 != -1) ? html.IndexOf('"', ind7+9) : 0;
-
+            int ind3 = html.IndexOf("img src=\"");
+            int ind4 = (ind3 != -1) ? html.IndexOf('"', ind3+9) : 0;
             if (ind1 != -1 && ind2 != -1)
             {
                 url = "https://" + html.Substring(ind1, ind2 - ind1);
             }
-            //else if (ind3 != -1 && ind4 != -1)
-            //{
-            //    url = "https://" + html.Substring(ind3, ind4 - ind3);
-            //}
-            //else if (ind5 != -1 && ind6 != -1)
-            //{
-            //    url = "https://" + html.Substring(ind5, ind6 - ind5);
-            //}
-            else if (ind7 != -1 && ind8 != -1)
+            else if (ind3 != -1 && ind4 != -1)
             {
-                url = "http:" + html.Substring(ind7 + 9, ind8 - ind7-9);
+                url = "https:" + html.Substring(ind3 + 9, ind4 - ind3-9);
             }
             else
             {
@@ -286,6 +270,8 @@ namespace parser.DataTypes
             }
             return url;
         }
+
+
 
         private static string CreatePosterFileName(string _name, string _url)
         {
@@ -313,7 +299,7 @@ namespace parser.DataTypes
 
         public static string ParseElementByNameFromText(string text, string elemName)
         {
-            string parsed = "";
+            string parsed = String.Empty;
             try
             {
                 int startPos = text.IndexOf(elemName);

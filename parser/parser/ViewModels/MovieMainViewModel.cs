@@ -29,8 +29,8 @@ namespace parser.ViewModels
         string connectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;initial catalog=UMDB;integrated security=True;MultipleActiveResultSets=True;";
         //Logining
         #region logining
-        BrowserSession session;
-        public BrowserSession Session
+        Session session;
+        public Session Session
         {
             get
             {
@@ -350,7 +350,7 @@ namespace parser.ViewModels
 
         public MovieMainViewModel()
         {
-            Session = new BrowserSession();
+            Session = new Session();
             UserName = "bohdan2307";
             Movies = new ObservableCollection<Movie>();
             Genres = new ObservableCollection<Genre>();
@@ -416,6 +416,7 @@ namespace parser.ViewModels
                 {
                     doc = session.Load(Url + "-" + start);
                 });
+                System.Windows.MessageBox.Show(doc.DocumentNode.SelectSingleNode("//body").InnerHtml, "EDFFF");
                 HtmlNodeCollection urls = doc.DocumentNode.SelectNodes("//a[@class='topictitle']");
                 for(int i=0; i<urls.Count; ++i)
                 {
