@@ -254,7 +254,7 @@ namespace parser.ViewModels
                 switch (SearchType)
                 {
                     case 0:
-                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Length, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
+                        return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => (new CultureInfo("UA")).CompareInfo.IndexOf(s.Name, SearchText, CompareOptions.IgnoreCase) >= 0)) : movies;
                     case 1:
                         return (SearchText != "") ? new ObservableCollection<Movie>(movies.Where(s => s.Year.ToString()==SearchText)) : movies;
                     case 2:
