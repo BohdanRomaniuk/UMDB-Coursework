@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace database.Models
@@ -11,6 +12,7 @@ namespace database.Models
         
         public User PostedBy { get; set; }
         [Required]
-        public string PostText { get; set; }
+        public string CommentText { get; set; }
+        public DateTime PostedDate { get; set; }
     }
 }

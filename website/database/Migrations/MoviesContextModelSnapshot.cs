@@ -25,12 +25,14 @@ namespace database.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("MovieId");
-
-                    b.Property<string>("PostText")
+                    b.Property<string>("CommentText")
                         .IsRequired();
 
+                    b.Property<int?>("MovieId");
+
                     b.Property<string>("PostedById");
+
+                    b.Property<DateTime>("PostedDate");
 
                     b.HasKey("Id");
 
@@ -38,7 +40,7 @@ namespace database.Migrations
 
                     b.HasIndex("PostedById");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("database.Models.Country", b =>
@@ -137,6 +139,26 @@ namespace database.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("MovieGenres");
+                });
+
+            modelBuilder.Entity("database.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("MovieIdId");
+
+                    b.Property<int>("RateValue");
+
+                    b.Property<string>("RatedByIdId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieIdId");
+
+                    b.HasIndex("RatedByIdId");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("database.Models.User", b =>
@@ -336,6 +358,17 @@ namespace database.Migrations
                         .WithMany("Genres")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("database.Models.Rating", b =>
+                {
+                    b.HasOne("database.Models.Movie", "MovieId")
+                        .WithMany()
+                        .HasForeignKey("MovieIdId");
+
+                    b.HasOne("database.Models.User", "RatedById")
+                        .WithMany()
+                        .HasForeignKey("RatedByIdId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

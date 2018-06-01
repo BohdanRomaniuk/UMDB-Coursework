@@ -15,5 +15,7 @@ namespace website.Models.Interfaces
         IQueryable<MovieCountry> MovieCountries { get; }
         IQueryable<User> Users { get; }
         IQueryable<Comment> Comments { get; }
+
+        void AddComment(int movieId, Comment comment);
     }
 }

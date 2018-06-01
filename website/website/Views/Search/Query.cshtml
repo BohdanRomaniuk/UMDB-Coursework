@@ -64,6 +64,7 @@
     </form>
 </div>
 <div class="col-xs-12 col-sm-9" style="margin-top: 20px;">
+    <span>Всього результатів пошуку @Model.Count</span>
     <div class="input-group">
         <input type="text" form="myform" class="form-control" placeholder="Шукати..." asp-for="MovieName">
         <span class="input-group-btn">
@@ -72,74 +73,78 @@
     </div>
     @foreach (Movie movie in Model.Movies)
     {
-        <div>
-            <h2 class="altname">@movie.Name (@movie.Year)</h2>
-            <div class="row details-panel">
+    <div>
+        <a asp-controller="Movie" asp-action="ViewMovie" asp-route-id="@movie.Id"><h2 class="altname">@movie.Name (@movie.Year)</h2></a>
+        <div class="row details-panel">
 
-                <div class="col-md-4">
-                    <a data-fancybox="" href="/posters/@movie.Poster" rel="posters">
-                        <img itemprop="image" class="img-responsive" src="/posters/@movie.Poster" alt="@movie.Name">
-                    </a>
-                </div>
-                <div class="col-md-8 col-sm-6">
-                    <div></div>
-                    <table class="table movie-detail">
-                        <tbody>
-                            <tr>
-                                <td>Жанр:</td>
-                                <td>
-                                    @foreach (MovieGenre genre in movie.Genres)
-                                    {
-                                        <a class="label label-primary" href="/?genres=@genre.Genre.Id">@genre.Genre.Name</a>
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Країна:</td>
-                                <td>
-                                    @foreach (MovieCountry country in movie.Countries)
-                                    {
-                                        <a class="label label-primary" href="/?country=@country.Country.Id">@country.Country.Name</a>
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Тривалість:</td>
-                                <td>@movie.Length</td>
-                            </tr>
-                            <tr>
-                                <td>Кінокомпанія</td>
-                                <td>@movie.Companies</td>
-                            </tr>
-                            <tr>
-                                <td>Режисер:</td>
-                                <td>@movie.Director</td>
-                            </tr>
-                            <tr>
-                                <td>Актори:</td>
-                                <td>@movie.Actors</td>
-                            </tr>
-                            <tr>
-                                <td>IMDB:</td>
-                                <td>
-                                    <a target="_blank" rel="nofollow" href="http://www.imdb.com/title/tt5886440/" class="postlink"><img src="//hurtom.com/imdb/tt5886440.png" border="0" alt=""></a>
-                                </td>
-                            </tr>
-                            <!--<tr>
-                                <td>Сюжет:</td>
-                                <td>@movie.Story</td>
-                            </tr>-->
-                        </tbody>
-                    </table>
-                    <br>
-                </div>
+            <div class="col-md-4">
+                <a data-fancybox="" href="/posters/@movie.Poster" rel="posters">
+                    <img itemprop="image" class="img-responsive" src="/posters/@movie.Poster" alt="@movie.Name">
+                </a>
+            </div>
+            <div class="col-md-8 col-sm-6">
+                <div></div>
+                <table class="table movie-detail">
+                    <tbody>
+                        <tr>
+                            <td>Жанр:</td>
+                            <td>
+                                @foreach (MovieGenre genre in movie.Genres)
+                            {
+                                <a class="label label-primary" href="/?genres=@genre.Genre.Id">@genre.Genre.Name</a>
+                        }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Країна:</td>
+                            <td>
+                                @foreach (MovieCountry country in movie.Countries)
+                            {
+                                <a class="label label-primary" href="/?country=@country.Country.Id">@country.Country.Name</a>
+                        }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Тривалість:</td>
+                            <td>@movie.Length</td>
+                        </tr>
+                        <tr>
+                            <td>Кінокомпанія</td>
+                            <td>@movie.Companies</td>
+                        </tr>
+                        <tr>
+                            <td>Режисер:</td>
+                            <td>@movie.Director</td>
+                        </tr>
+                        <tr>
+                            <td>Актори:</td>
+                            <td>@movie.Actors</td>
+                        </tr>
+                        <tr>
+                            <td>IMDB:</td>
+                            <td>
+                                <a target="_blank" rel="nofollow" href="http://www.imdb.com/title/tt5886440/" class="postlink"><img src="//hurtom.com/imdb/tt5886440.png" border="0" alt=""></a>
+                            </td>
+                        </tr>
+                        <!--<tr>
+                        <td>Сюжет:</td>
+                        <td>@movie.Story</td>
+                    </tr>-->
+                    </tbody>
+                </table>
+                <br>
             </div>
         </div>
+    </div>
         <br>
     }
 </div>
 <div page-model="@Model.Pagination"  page-classes-enabled="true"
      page-class="btn" page-class-normal="btn-secondary"
-     page-class-selected="btn-primary" page-url-yearFrom="@Model.YearFrom"     page-url-yeartTo="@Model.YearTo" page-url-country="@Model.Country"     page-url-orderBy="@Model.OrderBy" page-url-movieName="@Model.MovieName"     page-url-genres="@Model.SelectedGenres" class="btn-group pull-right m-1">
+     page-class-selected="btn-primary" page-url-yearFrom="@Model.YearFrom"
+     page-url-yeartTo="@Model.YearTo" page-url-country="@Model.Country"
+     page-url-orderBy="@Model.OrderBy" page-url-movieName="@Model.MovieName"
+     page-url-genres="@Model.SelectedGenres"
+ class="btn-group pull-right m-1">
 </div>
 

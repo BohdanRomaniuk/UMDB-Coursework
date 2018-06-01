@@ -7,15 +7,18 @@ using database.Models;
 using website.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace website.Controllers
 {
     public class SearchController : Controller
     {
+        private UserManager<User> userManager;
         private readonly IUMDBRepository db;
-        public SearchController(IUMDBRepository _db)
+        public SearchController(IUMDBRepository _db, UserManager<User> _userManager)
         {
             db = _db;
+            userManager = _userManager;
         }
 
         public IActionResult Query(int country=0, int[] genres = null, string orderBy="year-desc", int yearFrom=1920, int yearTo=2018, string movieName="", int page = 1)
@@ -54,6 +57,7 @@ namespace website.Controllers
             }
             return View(new SearchViewModel(db.Genres, 
                                             db.Countries,
+                                            allMovies.Count(),
                                             allMovies.Skip(page*perPage-perPage).Take(perPage),
                                             genres,
                                             country,

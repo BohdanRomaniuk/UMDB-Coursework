@@ -23,5 +23,16 @@ namespace website.Models
         public IQueryable<MovieCountry> MovieCountries => context.MovieCountries;
         public IQueryable<User> Users => context.Users;
         public IQueryable<Comment> Comments => context.Comments;
+
+        public void AddComment(int movieId,Comment comment)
+        {
+            Movie current = context.Movies.Where(m => m.Id == movieId).FirstOrDefault();
+            if(current.Comments==null)
+            {
+                current.Comments = new List<Comment>();
+            }
+            current.Comments.Add(comment);
+            context.SaveChanges();
+        }
     }
 }
