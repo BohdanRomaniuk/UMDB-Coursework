@@ -1,0 +1,150 @@
+﻿@using database.Models
+@using website.Models
+@addTagHelper website.Infrastructure.*, website
+@model SearchViewModel
+@{
+    ViewData["Title"] = "Пошук";
+}
+<div class="col-xs-12 col-md-12 col-lg-3" id="sidebar" style="margin-top: 20px;">
+    <form method="get" action="/" id="myform">
+        <fieldset class="form-group">
+            <label for="country">Жанри</label>
+            <div class="tab-content">
+                <div class="tab-pane genres active show" id="include_genres" role="tabpanel" style="max-height: 20em;overflow-y: scroll;">
+                    @foreach (Genre genre in Model.Genres)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                @if (Model.SelectedGenres.Contains(genre.Id))
+                                {
+                                    <input type="checkbox" name="genres" value="@genre.Id" checked>@genre.Name
+                                }
+                                else
+                                {
+
+                                    <input type="checkbox" name="genres" value="@genre.Id">@genre.Name
+                                }
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="country">Країна</label>
+            <select class="form-control" id="type" asp-for="Country">
+                <option value="">Будь-яка країна</option>
+                @foreach (Country country in Model.Countries)
+                {
+                    <option value="@country.Id">
+                        @country.Name
+                    </option>
+                }
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="order_by">Сортувати за</label>
+            <select class="form-control" id="order_by" asp-for="OrderBy">
+                <option value="year-desc">
+                    Рік випуску (новіші спочатку)
+                </option>
+                <option value="year-asc">
+                    Рік випуску (старші спочатку)
+                </option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="ys">Рік випуску (мін)</label>
+            <input type="number" class="form-control" id="ys" asp-for="YearFrom" placeholder="1920" min="1920" max="2018">
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="ye">Рік випуску (макс)</label>
+            <input type="number" class="form-control" id="ye" asp-for="YearTo" placeholder="2018" min="1920" max="2018">
+        </fieldset>
+    </form>
+</div>
+<div class="col-xs-12 col-sm-9" style="margin-top: 20px;">
+    <span>Всього результатів пошуку @Model.Count</span>
+    <div class="input-group">
+        <input type="text" form="myform" class="form-control" placeholder="Шукати..." asp-for="MovieName">
+        <span class="input-group-btn">
+            <button type="submit" form="myform" class="btn btn-primary">Пошук</button>
+        </span>
+    </div>
+    @foreach (Movie movie in Model.Movies)
+    {
+    <div>
+        <a asp-controller="Movie" asp-action="ViewMovie" asp-route-id="@movie.Id"><h2 class="altname">@movie.Name (@movie.Year)</h2></a>
+        <div class="row details-panel">
+
+            <div class="col-md-4">
+                <a data-fancybox="" href="/posters/@movie.Poster" rel="posters">
+                    <img itemprop="image" class="img-responsive" src="/posters/@movie.Poster" alt="@movie.Name">
+                </a>
+            </div>
+            <div class="col-md-8 col-sm-6">
+                <div></div>
+                <table class="table movie-detail">
+                    <tbody>
+                        <tr>
+                            <td>Жанр:</td>
+                            <td>
+                                @foreach (MovieGenre genre in movie.Genres)
+                            {
+                                <a class="label label-primary" href="/?genres=@genre.Genre.Id">@genre.Genre.Name</a>
+                        }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Країна:</td>
+                            <td>
+                                @foreach (MovieCountry country in movie.Countries)
+                            {
+                                <a class="label label-primary" href="/?country=@country.Country.Id">@country.Country.Name</a>
+                        }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Тривалість:</td>
+                            <td>@movie.Length</td>
+                        </tr>
+                        <tr>
+                            <td>Кінокомпанія</td>
+                            <td>@movie.Companies</td>
+                        </tr>
+                        <tr>
+                            <td>Режисер:</td>
+                            <td>@movie.Director</td>
+                        </tr>
+                        <tr>
+                            <td>Актори:</td>
+                            <td>@movie.Actors</td>
+                        </tr>
+                        <tr>
+                            <td>IMDB:</td>
+                            <td>
+                                <a target="_blank" rel="nofollow" href="http://www.imdb.com/title/tt5886440/" class="postlink"><img src="//hurtom.com/imdb/tt5886440.png" border="0" alt=""></a>
+                            </td>
+                        </tr>
+                        <!--<tr>
+                        <td>Сюжет:</td>
+                        <td>@movie.Story</td>
+                    </tr>-->
+                    </tbody>
+                </table>
+                <br>
+            </div>
+        </div>
+    </div>
+        <br>
+    }
+</div>
+<div page-model="@Model.Pagination"  page-classes-enabled="true"
+     page-class="btn" page-class-normal="btn-secondary"
+     page-class-selected="btn-primary" page-url-yearFrom="@Model.YearFrom"
+     page-url-yeartTo="@Model.YearTo" page-url-country="@Model.Country"
+     page-url-orderBy="@Model.OrderBy" page-url-movieName="@Model.MovieName"
+     page-url-genres="@Model.SelectedGenres"
+ class="btn-group pull-right m-1">
+</div>
+

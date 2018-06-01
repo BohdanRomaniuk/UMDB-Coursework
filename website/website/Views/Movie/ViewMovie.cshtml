@@ -1,0 +1,91 @@
+﻿@using database.Models
+@model Movie
+@{
+    ViewData["Title"] = Model.Name + " - Перегляд фільму";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="altname">@Model.Name (@Model.Year)</h2>
+<div class="row details-panel">
+
+    <div class="col-md-4">
+        <a data-fancybox="" href="/posters/@Model.Poster" rel="posters">
+            <img itemprop="image" class="img-responsive" src="/posters/@Model.Poster" alt="@Model.Name">
+        </a>
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <div></div>
+        <table class="table movie-detail">
+            <tbody>
+                <tr>
+                    <td>Жанр:</td>
+                    <td>
+                        @foreach (MovieGenre genre in Model.Genres)
+                        {
+                            <a class="label label-primary" href="/?genres=@genre.Genre.Id">@genre.Genre.Name</a>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>Країна:</td>
+                    <td>
+                        @foreach (MovieCountry country in Model.Countries)
+                        {
+                            <a class="label label-primary" href="/?country=@country.Country.Id">@country.Country.Name</a>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тривалість:</td>
+                    <td>@Model.Length</td>
+                </tr>
+                <tr>
+                    <td>Кінокомпанія</td>
+                    <td>@Model.Companies</td>
+                </tr>
+                <tr>
+                    <td>Режисер:</td>
+                    <td>@Model.Director</td>
+                </tr>
+                <tr>
+                    <td>Актори:</td>
+                    <td>@Model.Actors</td>
+                </tr>
+                <tr>
+                    <td>IMDB:</td>
+                    <td>
+                        <a target="_blank" rel="nofollow" href="http://www.imdb.com/title/tt5886440/" class="postlink"><img src="//hurtom.com/imdb/tt5886440.png" border="0" alt=""></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Сюжет:</td>
+                    <td>@Model.Story</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+    </div>
+</div>
+
+<h2 class="altname">Відгуки користувачів</h2>
+@foreach (Comment comment in Model.Comments)
+{
+    <div class="panel panel-default">
+        <div style="padding: 10px;">
+            <a asp-controller="Profile" asp-action="View" asp-route-name="@comment.PostedBy.UserName" class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@comment.PostedBy.Name</a>
+            <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@comment.PostedDate</span>
+            <br>
+            <div style="padding: 5px 0;">@comment.CommentText</div>
+        </div>
+    </div>
+}
+<hr />
+<h3>Відправити відгук:</h3>
+<form method="post" asp-controller="Movie" asp-action="AddComment">
+    <div class="form-group">
+        <label for="inputComment">Текст відгуку</label>
+        <textarea name="commentText" class="form-control" id="inputComment" rows="5" required="required"></textarea>
+    </div>
+    <input type="hidden" name="movieId" value="@Model.Id" />
+    <button type="submit" class="btn btn-success">Надіслати</button>
+</form>

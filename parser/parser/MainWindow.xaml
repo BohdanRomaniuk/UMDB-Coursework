@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:parser"
         mc:Ignorable="d"
-        Title="UMDBParser" Name="MainWindowName" Height="600" Width="1000" Icon="bot.ico">
+        Title="UMDBParser" Name="MainWindowName" Height="600" Width="1250" Icon="bot.ico">
     <DockPanel>
         <Menu DockPanel.Dock="Top" BorderBrush="Black">
             <MenuItem Header="Файл" Command="">
@@ -16,7 +16,15 @@
                 <Separator />
                 <MenuItem Header="Вийти" Command="{Binding CloseWindow_Command}" CommandParameter="{Binding ElementName=MainWindowName}"/>
             </MenuItem>
-            <MenuItem Header="БД" Command=""/>
+            <MenuItem Header="БД" Command="">
+                <MenuItem Header="Згенерувати жанри" Command="{Binding GenerateGenresCommand}"/>
+                <MenuItem Header="Зберегти жанри в бд" Command="{Binding SaveGenresToDBCommand}"/>
+                <Separator/>
+                <MenuItem Header="Згенерувати країни" Command="{Binding GenereteCountriesCommand}"/>
+                <MenuItem Header="Зберегти країни в бд" Command="{Binding SaveCountriesToDBCommand}"/>
+                <Separator/>
+                <MenuItem Header="Зберегти фільми в бд" Command="{Binding SaveMoviesToDBCommand}"/>
+            </MenuItem>
             <MenuItem Header="Допомога" Command=""/>
         </Menu>
         <Grid DockPanel.Dock="Bottom" Margin="3">
